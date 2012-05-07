@@ -5,7 +5,7 @@ module Objectify
     end
 
     def call(object, method)
-      method_obj = object.instance_method(:initialize)
+      method_obj = method_object(object, method)
       arguments = method_obj.parameters.map do |reqd, name|
         resolver_for(name).call
       end
@@ -15,6 +15,14 @@ module Objectify
     private
       def resolver_for(name)
         @resolvers.detect { |r| r.name == name }
+      end
+
+      def method_object(object, method)
+        if method == :new
+          object.instance_method(:initialize)
+        else
+          object.method(method)
+        end
       end
   end
 end

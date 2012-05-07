@@ -7,6 +7,10 @@ describe "Objectify::Injector" do
     def initialize(some_dependency)
       @some_dependency = some_dependency
     end
+
+    def call(some_dependency)
+      some_dependency
+    end
   end
 
   before do
@@ -16,7 +20,12 @@ describe "Objectify::Injector" do
     @injector   = Objectify::Injector.new([@resolver])
   end
 
-  it "can inject based on method name using a simple resolver" do
+  it "can constructor inject based on method name using a simple resolver" do
     @injector.call(MyInjectedClass, :new).some_dependency.should == @dependency
+  end
+
+  it "can method inject based on method name using a simple resolver" do
+    object = MyInjectedClass.new(nil)
+    @injector.call(object, :call).should == @dependency
   end
 end
