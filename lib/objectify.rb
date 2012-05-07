@@ -7,7 +7,7 @@ module Objectify
     def call(object, method)
       method_obj = method_object(object, method)
       arguments = method_obj.parameters.map do |reqd, name|
-        resolver_for(name).call
+        call(resolver_for(name), :call) if reqd == :req
       end
       object.send(method, *arguments)
     end
