@@ -35,4 +35,15 @@ describe "Objectify::MultiResolverLocator" do
     not_found = lambda { @resolver_locator.call(:asdf) }
     not_found.should raise_error(ArgumentError)
   end
+
+  it "accepts a temporary, contextual locator which takes priority" do
+    @temp_locator = stub("TempLocator", :call => :temp_resolver)
+    context_executed = false
+    @resolver_locator.with_context(@temp_locator) do |locator|
+      context_executed = true
+      locator.call(:a).should == :temp_resolver
+    end
+    context_executed.should be_true
+    @resolver_locator.call(:a).should == :resolver_a
+  end
 end

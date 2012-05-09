@@ -22,5 +22,10 @@ module Objectify
 
       raise ArgumentError, "No resolver found for #{name}."
     end
+
+    def with_context(context)
+      @locators.unshift(context)
+      yield(self).tap { |r| @locators.shift }
+    end
   end
 end
