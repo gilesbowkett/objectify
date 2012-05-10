@@ -1,4 +1,5 @@
-require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
+require "spec_helper"
+require "objectify/injector"
 
 describe "Objectify::Injector" do
   class MyInjectedClass
@@ -17,12 +18,25 @@ describe "Objectify::Injector" do
     end
   end
 
+  # gotta use a fake resolver here because mocha sucks balls lolruby
+  class SimpleResolver
+    attr_accessor :name
+
+    def initialize(something)
+      @something = something
+    end
+
+    def call
+      @something
+    end
+  end
+
   describe "the simple case" do
     before do
-      @dependency = stub("Dependency")
-      @resolver   = stub("Resolver", :name => :some_dependency,
-                                     :call => @dependency)
-      @injector   = Objectify::Injector.new([@resolver])
+      @dependency    = stub("Dependency")
+      @resolver      = SimpleResolver.new(@dependency)
+      @resolver.name = :some_dependency
+      @injector      = Objectify::Injector.new([@resolver])
     end
 
     it "can constructor inject based on method name using a simple resolver" do
