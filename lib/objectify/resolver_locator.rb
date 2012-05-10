@@ -28,4 +28,19 @@ module Objectify
       yield(self).tap { |r| @locators.shift }
     end
   end
+
+  class NamedValueResolverLocator
+    def initialize(resolver_factory = NamedValueResolver)
+      @resolver_factory = resolver_factory
+      @resolvers        = {}
+    end
+
+    def add(name, value)
+      @resolvers[name] = @resolver_factory.new(name, value)
+    end
+
+    def call(name)
+      @resolvers[name]
+    end
+  end
 end

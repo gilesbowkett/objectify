@@ -47,3 +47,21 @@ describe "Objectify::MultiResolverLocator" do
     @resolver_locator.call(:a).should == :resolver_a
   end
 end
+
+describe "Objectify::NamedValueResolverLocator" do
+  before do
+    @resolver = stub("Resolver")
+    @factory = stub("ResolverFactory", :new => @resolver)
+    @locator = Objectify::NamedValueResolverLocator.new(@factory)
+  end
+
+  it "#call returns the per-name resolver" do
+    @locator.add(:name, :value)
+    @locator.call(:name).should == @resolver
+  end
+
+  it "#add creates a resolver for the supplied key/value pair" do
+    @locator.add(:name, :value)
+    @factory.should have_received(:new).with(:name, :value)
+  end
+end
