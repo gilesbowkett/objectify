@@ -33,10 +33,10 @@ describe "Objectify::Injector" do
 
   describe "the simple case" do
     before do
-      @dependency    = stub("Dependency")
-      @resolver      = SimpleResolver.new(@dependency)
-      @resolver.name = :some_dependency
-      @injector      = Objectify::Injector.new([@resolver])
+      @dependency       = stub("Dependency")
+      @resolver         = SimpleResolver.new(@dependency)
+      @resolver_locator = stub("ResolverLocator", :call => @resolver)
+      @injector         = Objectify::Injector.new(@resolver_locator)
     end
 
     it "can constructor inject based on method name using a simple resolver" do
@@ -46,6 +46,11 @@ describe "Objectify::Injector" do
     it "can method inject based on method name using a simple resolver" do
       object = MyInjectedClass.new(nil)
       @injector.call(object, :call).should == @dependency
+    end
+
+    it "calls the resolver_locator to get the resolver" do
+      @injector.call(MyInjectedClass, :new)
+      @resolver_locator.should have_received(:call).with(:some_dependency)
     end
   end
 
@@ -61,9 +66,9 @@ describe "Objectify::Injector" do
 
   context "recursive injection in to resolvers" do
     before do
-      @resolver   = stub("Resolver", :name => :some_dependency,
-                                     :call => @dependency)
-      @injector   = Objectify::Injector.new([ParamsResolver.new])
+      @resolver         = ParamsResolver.new
+      @resolver_locator = stub("ResolverLocator", :call => @resolver)
+      @injector         = Objectify::Injector.new(@resolver_locator)
     end
 
     it "can inject into resolvers" do
