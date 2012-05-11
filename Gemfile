@@ -1,7 +1,7 @@
 source "http://rubygems.org"
 # Add dependencies required to use your gem here.
 # Example:
-gem "activesupport", ">= 3.0.0"
+gem "rails", ">= 3.0.0"
 gem "i18n"
 
 # Add dependencies to develop your gem here.
