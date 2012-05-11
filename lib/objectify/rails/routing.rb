@@ -6,6 +6,7 @@ module Objectify
       class ObjectifyMapper
         RESOURCE_ACTIONS = [:index, :show, :create, :update, :destroy].freeze
         OBJECTIFY_OPTIONS = [:policies].freeze
+        RAILS_OPTIONS = { :controller => "objectify/rails/controller" }.freeze
 
         def initialize(rails_mapper, application = Rails.application)
           @rails_mapper = rails_mapper
@@ -15,7 +16,7 @@ module Objectify
         def resources(*args)
           options           = args.extract_options!
           objectify_options = extract_objectify_options(options)
-          rails_options     = options.merge(:controller => :objectify)
+          rails_options     = options.merge(RAILS_OPTIONS)
 
           @rails_mapper.resources(*(args + [rails_options]))
           @application.objectify.append_routes(*(args + [objectify_options]))
