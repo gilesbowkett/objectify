@@ -46,8 +46,20 @@ describe "Objectify::Rails::Routing::ObjectifyMapper" do
       @mapper.defaults @opts
     end
 
-    it "handls the defaults to the objectify context" do
+    it "hands the defaults to the objectify context" do
       @objectify.should have_received(:append_defaults).with(@opts)
+    end
+  end
+
+  context "setting policy responders" do
+    before do
+      @opts = { :authenticated => :unauthenticated_responder }
+      @mapper.policy_responders @opts
+    end
+
+    it "hands the policy responders to the objectify context" do
+      @objectify.should have_received(:append_policy_responders).
+                          with(@opts)
     end
   end
 end

@@ -23,6 +23,10 @@ module Objectify
           @application.objectify.append_defaults(options)
         end
 
+        def policy_responders(options)
+          @application.objectify.append_policy_responders(options)
+        end
+
         private
           def extract_objectify_options(options)
             Hash[*(RESOURCE_ACTIONS + OBJECTIFY_OPTIONS).map do |key|
