@@ -39,4 +39,15 @@ describe "Objectify::Rails::Routing::ObjectifyMapper" do
       @objectify.should have_received(:append_routes).with(:pictures, opts)
     end
   end
+
+  context "setting defaults" do
+    before do
+      @opts = { :policies => :fuckitttttt }
+      @mapper.defaults @opts
+    end
+
+    it "handls the defaults to the objectify context" do
+      @objectify.should have_received(:append_defaults).with(@opts)
+    end
+  end
 end

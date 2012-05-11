@@ -19,6 +19,10 @@ module Objectify
           @application.objectify.append_routes(*(args + [objectify_options]))
         end
 
+        def defaults(options)
+          @application.objectify.append_defaults(options)
+        end
+
         private
           def extract_objectify_options(options)
             Hash[*(RESOURCE_ACTIONS + OBJECTIFY_OPTIONS).map do |key|
