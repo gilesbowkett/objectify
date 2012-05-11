@@ -1,3 +1,5 @@
+require "action_dispatch"
+
 module Objectify
   module Rails
     module Routing
@@ -33,6 +35,29 @@ module Objectify
               [key, options.delete(key)] if options.include?(key)
             end.compact.flatten]
           end
+      end
+
+      class Mapper < ActionDispatch::Routing::Mapper
+        def objectify
+          @objectify ||= ObjectifyMapper.new(self)
+        end
+      end
+
+      class RouteSet < ActionDispatch::Routing::RouteSet
+        def draw(&block)
+          clear! unless @disable_clear_and_finalize
+
+          mapper = Mapper.new(self)
+          if block.arity == 1
+            mapper.instance_exec(ActionDispatch::Routing::DeprecatedMapper.new(self), &block)
+          else
+            mapper.instance_exec(&block)
+          end
+
+          finalize! unless @disable_clear_and_finalize
+
+          nil
+        end
       end
     end
   end
