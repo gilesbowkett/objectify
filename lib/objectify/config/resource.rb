@@ -1,3 +1,6 @@
+require "objectify/config/policies"
+require "objectify/config/action"
+
 module Objectify
   module Config
     class Resource
@@ -5,7 +8,9 @@ module Objectify
 
       attr_reader :name, :policies
 
-      def initialize(name, options, policy_config_factory, action_config_factory)
+      def initialize(name, options,
+                     policy_config_factory = Policies,
+                     action_config_factory = Action)
         @name = name
         @policies = policy_config_factory.new(options)
         @actions = ACTIONS.inject({}) do |configs, action|
