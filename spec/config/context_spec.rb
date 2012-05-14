@@ -1,9 +1,9 @@
 require "spec_helper"
-require "objectify/context"
+require "objectify/config/context"
 
-describe "Objectify::Context" do
+describe "Objectify::Config::Context" do
   before do
-    @context = Objectify::Context.new
+    @context = Objectify::Config::Context.new
   end
 
   context "appending policy responders" do
