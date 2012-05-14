@@ -1,12 +1,16 @@
+require "objectify/config/resource"
+
 module Objectify
   module Config
     class Context
-      attr_reader :policy_responders, :defaults, :routes
+      attr_reader :policy_responders, :defaults, :resources
 
-      def initialize
+      def initialize(resource_factory = Resource)
+        @resource_factory = resource_factory
+
         @policy_responders = {}
         @defaults = {}
-        @routes = {}
+        @resources = {}
       end
 
       def append_policy_responders(responders)
@@ -23,10 +27,10 @@ module Objectify
         end
       end
 
-      def append_routes(*routes)
-        options = routes.extract_options!
-        routes.each do |resource|
-          @routes[resource] = options
+      def append_resources(*resources)
+        options = resources.extract_options!
+        resources.each do |resource|
+          @resources[resource] = @resource_factory.new(resource, options)
         end
       end
     end

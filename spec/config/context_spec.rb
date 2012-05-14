@@ -3,7 +3,10 @@ require "objectify/config/context"
 
 describe "Objectify::Config::Context" do
   before do
-    @context = Objectify::Config::Context.new
+    @resource = stub("Resource")
+    @resource_factory = stub("ResourceFactory", :new => @resource)
+
+    @context = Objectify::Config::Context.new(@resource_factory)
   end
 
   context "appending policy responders" do
@@ -33,14 +36,15 @@ describe "Objectify::Config::Context" do
     end
   end
 
-  context "appending routes" do
+  context "appending resources" do
     before do
       @opts = {:policies => [:x,:y,:z]}
-      @context.append_routes(:pictures, @opts)
+      @context.append_resources(:pictures, @opts)
     end
 
-    it "uses the resource name as the hash key & the opts as the value" do
-      @context.routes[:pictures].should == @opts
+    it "creates and stores a resource using the factory" do
+      @resource_factory.should have_received(:new).with(:pictures, @opts)
+      @context.resources[:pictures].should == @resource
     end
   end
 end
