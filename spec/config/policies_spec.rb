@@ -5,6 +5,7 @@ describe "Objectify::Config::Policies" do
   before do
     @opts = {:policies => [:a, :b, :c], :skip_policies => :b}
     @policies = Objectify::Config::Policies.new(@opts)
+    @policies2 = Objectify::Config::Policies.new(:skip_policies => :c)
   end
 
   it "extracts the policies from the options" do
@@ -13,5 +14,9 @@ describe "Objectify::Config::Policies" do
 
   it "extracts the skip policies from the options" do
     @policies.skip_policies.should == [:b]
+  end
+
+  it "can merge with other Policies objects" do
+    @policies.merge(@policies2).policies.should == [:a]
   end
 end
