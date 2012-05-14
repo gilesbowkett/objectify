@@ -3,10 +3,14 @@ require "objectify/config/context"
 
 describe "Objectify::Config::Context" do
   before do
+    @policies = stub("Policies")
+    @policies_factory = stub("PoliciesFactory", :new => @policies)
+
     @resource = stub("Resource")
     @resource_factory = stub("ResourceFactory", :new => @resource)
 
-    @context = Objectify::Config::Context.new(@resource_factory)
+    @context = Objectify::Config::Context.new(@resource_factory,
+                                              @policies_factory)
   end
 
   context "appending policy responders" do
@@ -22,17 +26,15 @@ describe "Objectify::Config::Context" do
     end
   end
 
-  context "appending defaults" do
+  context "setting defaults" do
     before do
-      @context.append_defaults :policies => [:a, :b]
-      @context.append_defaults :policies => [:c, :d]
+      @opts = {:policies => [:a, :b], :skip_policies => :c}
+      @context.append_defaults @opts
     end
     
-    it "is cumulative" do
-      defaults = {
-        :policies => [:a, :b, :c, :d]
-      }
-      @context.defaults.should == defaults
+    it "uses the policies factory to create and store policies" do
+      @policies_factory.should have_received(:new).with(@opts)
+      @context.policies.should == @policies
     end
   end
 

@@ -1,12 +1,15 @@
 require "objectify/config/resource"
+require "objectify/config/policies"
 
 module Objectify
   module Config
     class Context
-      attr_reader :policy_responders, :defaults, :resources
+      attr_reader :policy_responders, :defaults, :resources, :policies
 
-      def initialize(resource_factory = Resource)
+      def initialize(resource_factory = Resource,
+                     policies_factory = Policies)
         @resource_factory = resource_factory
+        @policies_factory = policies_factory
 
         @policy_responders = {}
         @defaults = {}
@@ -18,13 +21,7 @@ module Objectify
       end
 
       def append_defaults(defaults)
-        defaults.each do |k,v|
-          if @defaults.has_key?(k)
-            @defaults[k] += v
-          else
-            @defaults[k] = v
-          end
-        end
+        @policies = @policies_factory.new(defaults)
       end
 
       def append_resources(*resources)
