@@ -43,4 +43,9 @@ describe "Objectify::Config::Resource" do
     step = stub("Step", :type => :action, :name => :missing)
     lambda { @resource.child(step) }.should raise_error
   end
+
+  it "raises when an invalid type of child is asked for" do
+    step = stub("Step", :type => :bogus, :name => :index)
+    lambda { @resource.child(step) }.should raise_error
+  end
 end

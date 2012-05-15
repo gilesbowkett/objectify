@@ -32,6 +32,9 @@ module Objectify
       end
 
       def child(step)
+        step.type == :resource ||
+          raise(ArgumentError, "No children of type #{type}.")
+
         name = step.name
         @resources[name] ||
           raise(ArgumentError, "Can't find a resource named #{name}.")

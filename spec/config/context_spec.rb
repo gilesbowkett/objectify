@@ -58,5 +58,10 @@ describe "Objectify::Config::Context" do
       step = stub("Step", :type => :resource, :name => :missing)
       lambda { @context.child(step) }.should raise_error
     end
+
+    it "raises when an invalid type of child is asked for" do
+      step = stub("Step", :type => :bogus, :name => :pictures)
+      lambda { @resource.child(step) }.should raise_error
+    end
   end
 end

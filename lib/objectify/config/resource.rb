@@ -25,6 +25,9 @@ module Objectify
       end
 
       def child(step)
+        step.type == :action ||
+          raise(ArgumentError, "No children of type #{type}.")
+
         name = step.name
         @actions[name] ||
           raise(ArgumentError, "Can't find an action named #{name}.")
