@@ -30,6 +30,12 @@ module Objectify
           @resources[resource] = @resource_factory.new(resource, options)
         end
       end
+
+      def child(step)
+        name = step.name
+        @resources[name] ||
+          raise(ArgumentError, "Can't find a resource named #{name}.")
+      end
     end
   end
 end

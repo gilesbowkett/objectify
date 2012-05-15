@@ -48,5 +48,15 @@ describe "Objectify::Config::Context" do
       @resource_factory.should have_received(:new).with(:pictures, @opts)
       @context.resources[:pictures].should == @resource
     end
+
+    it "returns resource children by name" do
+      step = stub("Step", :type => :resource, :name => :pictures)
+      @context.child(step).should == @resource
+    end
+
+    it "raises on missing steps" do
+      step = stub("Step", :type => :resource, :name => :missing)
+      lambda { @context.child(step) }.should raise_error
+    end
   end
 end
