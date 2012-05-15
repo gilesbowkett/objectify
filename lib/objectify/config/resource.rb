@@ -23,6 +23,12 @@ module Objectify
       def action(name)
         @actions[name]
       end
+
+      def child(step)
+        name = step.name
+        @actions[name] ||
+          raise(ArgumentError, "Can't find an action named #{name}.")
+      end
     end
   end
 end

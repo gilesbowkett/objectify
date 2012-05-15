@@ -33,4 +33,14 @@ describe "Objectify::Config::Resource" do
       @resource.action(action).should == @action_conf
     end
   end
+
+  it "returns actions from #child" do
+    step = stub("Step", :type => :action, :name => :index)
+    @resource.child(step).should == @action_conf
+  end
+
+  it "raises when a child is missing" do
+    step = stub("Step", :type => :action, :name => :missing)
+    lambda { @resource.child(step) }.should raise_error
+  end
 end
