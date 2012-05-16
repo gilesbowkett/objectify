@@ -14,7 +14,7 @@ module Objectify
         }.freeze
 
         def initialize(rails_mapper,
-                       application = Rails.application,
+                       application = ::Rails.application,
                        action_factory = Config::Action)
           @rails_mapper = rails_mapper
           @application = application

@@ -1,14 +1,15 @@
 require "objectify/rails/routing"
+require "objectify/config/context"
 
 module Objectify
   module Rails
     module Application
       def objectify
-        @objectify ||= Context.new
+        @objectify ||= Config::Context.new
       end
 
       def routes
-        @routes ||= RouteSet.new
+        @routes ||= Routing::RouteSet.new
       end
     end
   end

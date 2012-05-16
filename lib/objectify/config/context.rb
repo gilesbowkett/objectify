@@ -6,9 +6,7 @@ module Objectify
       attr_reader :policy_responders, :defaults, :actions, :policies
       attr_writer :injector, :resolver_locator, :executor
 
-      def initialize(resource_factory = Resource,
-                     policies_factory = Policies)
-        @resource_factory = resource_factory
+      def initialize(policies_factory = Policies)
         @policies_factory = policies_factory
 
         @policy_responders = {}

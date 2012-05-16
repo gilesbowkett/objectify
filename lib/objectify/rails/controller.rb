@@ -4,7 +4,7 @@ require "objectify/policy_chain_executor"
 
 module Objectify
   module Rails
-    module Controller
+    module ControllerBehaviour
       def method_missing(name, *args, &block)
         objectify.resolver_locator.with_context(request_resolver) do
           respond_to do |format|
@@ -44,6 +44,10 @@ module Objectify
         def policy_chain_executor
           @policy_chain_executor ||= Objectify::PolicyChainExecutor.new(executor)
         end
+    end
+
+    class Controller < ActionController::Base
+      include ControllerBehaviour
     end
   end
 end
