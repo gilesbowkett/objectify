@@ -43,7 +43,9 @@ module Objectify
       end
 
       def resolver_locator
-        @resolver_locator ||= MultiResolverLocator.new
+        @resolver_locator ||= MultiResolverLocator.new(
+                                ConstResolverLocator.new
+                              )
       end
 
       def executor
