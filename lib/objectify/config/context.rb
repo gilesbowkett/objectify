@@ -1,4 +1,3 @@
-require "objectify/config/resource"
 require "objectify/config/policies"
 
 module Objectify
