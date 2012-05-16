@@ -49,7 +49,7 @@ module Objectify
         end
     end
 
-    class Controller < ActionController::Base
+    class ObjectifyController < ActionController::Base
       include ControllerBehaviour
     end
   end
