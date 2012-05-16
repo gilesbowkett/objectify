@@ -1,5 +1,12 @@
+PATH
+  remote: .
+  specs:
+    objectify (0.0.1)
+      i18n
+      rails (>= 3.0.0)
+
 GEM
-  remote: http://rubygems.org/
+  remote: https://rubygems.org/
   specs:
     actionmailer (3.1.1)
       actionpack (= 3.1.1)
@@ -104,8 +111,7 @@ PLATFORMS
 DEPENDENCIES
   bourne (= 1.0)
   bundler (~> 1.0.0)
-  i18n
   jeweler (~> 1.6.4)
   mocha (= 0.9.8)
-  rails (>= 3.0.0)
+  objectify!
   rspec (~> 2.4.0)
