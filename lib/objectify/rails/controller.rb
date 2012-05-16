@@ -6,6 +6,9 @@ module Objectify
   module Rails
     module ControllerBehaviour
       def method_missing(name, *args, &block)
+        route = Objectify::Route.new(params[:objectify][:resource].to_sym, params[:action].to_sym)
+        action = objectify.action(route)
+
         objectify.resolver_locator.with_context(request_resolver) do
           respond_to do |format|
             request_resolver.add(:format, format)
