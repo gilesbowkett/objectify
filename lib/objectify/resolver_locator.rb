@@ -43,4 +43,24 @@ module Objectify
       @resolvers[name]
     end
   end
+
+  class ConstResolverLocator
+    def initialize
+      @cache = {}
+    end
+
+    def call(name)
+      @cache[name] || locate_and_store(name)
+    end
+
+    private
+      def locate_and_store(name)
+        begin
+          [name, :resolver].join("_").classify.constantize.new.tap do |obj|
+            @cache[name] = obj
+          end
+        rescue NameError
+        end
+      end
+  end
 end

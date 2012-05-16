@@ -65,3 +65,26 @@ describe "Objectify::NamedValueResolverLocator" do
     @factory.should have_received(:new).with(:name, :value)
   end
 end
+
+class MyResolver
+end
+
+describe "Objectify::ConstResolverLocator" do
+  before do
+    @locator = Objectify::ConstResolverLocator.new
+  end
+
+  it "finds resolvers by const name" do
+    @locator.call(:my).should be_instance_of(MyResolver)
+  end
+
+  it "returns nil if the const is missing" do
+    @locator.call(:missing).should be_nil
+  end
+
+  it "keeps a cache of instantiated resolvers" do
+    obj1 = @locator.call(:my)
+    obj2 = @locator.call(:my)
+    obj1.object_id.should == obj2.object_id
+  end
+end
