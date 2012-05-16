@@ -3,14 +3,15 @@ module Objectify
     module Controller
       def method_missing(name, *args, &block)
         objectify.resolver_locator.with_context(request_resolver) do
-          if executor.call(policy, :policy)
-            service_result = executor.call(action.service, :service)
-            request_resolver.add(:service_result, service_result)
+          respond_to do |format|
+            request_resolver.add(:format, format)
 
-            respond_to do |format|
-              request_resolver.add(:format, format)
-              executor.call(action.responder, :responder)
+            if executor.call(policy, :policy)
+              service_result = executor.call(action.service, :service)
+              request_resolver.add(:service_result, service_result)
             end
+
+            executor.call(action.responder, :responder)
           end
         end
       end
