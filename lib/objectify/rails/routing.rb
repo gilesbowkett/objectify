@@ -1,16 +1,24 @@
 require "action_dispatch"
+require "objectify/config/action"
 
 module Objectify
   module Rails
     module Routing
-      class ObjectifyMapper
-        RESOURCE_ACTIONS = [:index, :show, :create, :update, :destroy].freeze
-        OBJECTIFY_OPTIONS = [:policies].freeze
-        RAILS_OPTIONS = { :controller => "objectify/rails/controller" }.freeze
+      RESOURCE_ACTIONS = [:index, :show, :new, :create,
+        :edit, :update, :destroy].freeze
+      OBJECTIFY_OPTIONS = [:policies].freeze
 
-        def initialize(rails_mapper, application = Rails.application)
+      class ObjectifyMapper
+        RAILS_OPTIONS = {
+          :controller => "objectify/rails/controller"
+        }.freeze
+
+        def initialize(rails_mapper,
+                       application = Rails.application,
+                       action_factory = Config::Action)
           @rails_mapper = rails_mapper
           @application = application
+          @action_factory = action_factory
         end
 
         def resources(*args)
@@ -19,7 +27,17 @@ module Objectify
           rails_options     = options.merge(RAILS_OPTIONS)
 
           @rails_mapper.resources(*(args + [rails_options]))
-          @application.objectify.append_routes(*(args + [objectify_options]))
+
+          args.each do |resource_name|
+            RESOURCE_ACTIONS.each do |action_name|
+              action = @action_factory.new(resource_name,
+                                           action_name,
+                                           objectify_options,
+                                           @application.objectify.policies)
+
+              @application.objectify.append_action(action)
+            end
+          end
         end
 
         def defaults(options)

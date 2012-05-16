@@ -3,14 +3,20 @@ require "objectify/rails/routing"
 
 describe "Objectify::Rails::Routing::ObjectifyMapper" do
   before do
-    @objectify    = stub("Objectify",   :append_policy_responders => nil,
-                                        :append_defaults          => nil,
-                                        :append_routes            => nil)
-    @rails_mapper = stub("RailsMapper", :resources => nil,
-                                        :match     => nil)
-    @application  = stub("Application", :objectify => @objectify)
-    klass         = Objectify::Rails::Routing::ObjectifyMapper
-    @mapper       = klass.new(@rails_mapper, @application)
+    @policies       = stub("Policies")
+    @objectify      = stub("Objectify",   :append_policy_responders => nil,
+                                          :append_defaults          => nil,
+                                          :append_action            => nil,
+                                          :policies  => @policies)
+    @rails_mapper   = stub("RailsMapper", :resources => nil,
+                                          :match     => nil)
+    @application    = stub("Application", :objectify => @objectify)
+    @action         = stub("Action")
+    @action_factory = stub("ActionFactory", :new => @action)
+    klass           = Objectify::Rails::Routing::ObjectifyMapper
+    @mapper         = klass.new(@rails_mapper,
+                                @application,
+                                @action_factory)
   end
 
   context "adding a resource" do
@@ -28,7 +34,7 @@ describe "Objectify::Rails::Routing::ObjectifyMapper" do
                             with(:pictures, opts)
     end
 
-    it "hands the objectify routing info to objectify" do
+    it "creates an action for each RESOURCE_ACTIONS" do
       opts = {
         :create => {
           :policies => :blocked_user,
@@ -36,7 +42,15 @@ describe "Objectify::Rails::Routing::ObjectifyMapper" do
         },
         :policies => :some_policy
       }
-      @objectify.should have_received(:append_routes).with(:pictures, opts)
+      Objectify::Rails::Routing::RESOURCE_ACTIONS.each do |action|
+        @action_factory.should have_received(:new).
+                                with(:pictures, action, opts, @policies)
+      end
+    end
+
+    it "appends each of the actions to the objectify object" do
+      @objectify.should have_received(:append_action).
+                          with(@action).times(7)
     end
   end
 
