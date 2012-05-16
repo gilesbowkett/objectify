@@ -3,13 +3,14 @@ require "objectify/config/policies"
 module Objectify
   module Config
     class Action
-      attr_reader :name, :policies, :service, :responder
+      attr_reader :resource_name, :name, :policies, :service, :responder
 
-      def initialize(name, options, policy_config_factory = Policies.new)
+      def initialize(resource_name, name, options, default_policies)
+        @resource_name = resource_name
         @name = name
-        @policies = policy_config_factory.new(options)
-        @service = options[:service]
-        @responder = options[:responder]
+        @policies = default_policies.merge(options, options[name])
+        @service = options[name][:service]
+        @responder = options[name][:responder]
       end
     end
   end

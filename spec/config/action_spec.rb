@@ -3,29 +3,38 @@ require "objectify/config/action"
 
 describe "Objectify::Config::Action" do
   before do
-    @options = {
-      :policies => :asdf,
-      :skip_policies => :bsdf,
+    @index_options = {
       :service => :something,
       :responder => :pictures_index
     }
 
-    @policy_conf = stub("PolicyConf")
-    @policy_config_factory = stub("PolicyConfFactory",
-                                   :new => @policy_conf)
+    @options = {
+      :policies => :asdf,
+      :skip_policies => :bsdf,
+      :index => @index_options
+    }
 
-    @action = Objectify::Config::Action.new(:index,
+    @merged_policies  = stub("MergedPolicies")
+    @default_policies = stub("PolicyConf", :merge => @merged_policies)
+
+    @action = Objectify::Config::Action.new(:pictures,
+                                            :index,
                                             @options,
-                                            @policy_config_factory)
+                                            @default_policies)
+  end
+
+  it "stores its resource_name" do
+    @action.resource_name.should == :pictures
   end
 
   it "stores its name" do
     @action.name.should == :index
   end
 
-  it "creates a policy config using the factory" do
-    @policy_config_factory.should have_received(:new).with(@options)
-    @action.policies.should == @policy_conf
+  it "merges and stores the policy configurations" do
+    @default_policies.should have_received(:merge).with(@options,
+                                                        @index_options)
+    @action.policies.should == @merged_policies
   end
 
   it "stores service overrides" do
