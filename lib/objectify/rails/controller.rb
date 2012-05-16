@@ -13,7 +13,7 @@ module Objectify
           respond_to do |format|
             request_resolver.add(:format, format)
 
-            if executor.call(policy, :policy)
+            if policy_chain_executor.call(action)
               service_result = executor.call(action.service, :service)
               request_resolver.add(:service_result, service_result)
             end
