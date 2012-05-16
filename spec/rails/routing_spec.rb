@@ -29,7 +29,46 @@ describe "Objectify::Rails::Routing::ObjectifyMapper" do
     end
 
     it "correctly adds the resource to the rails mapper" do
-      opts = { :controller => "objectify/rails/objectify" }
+      opts = { :controller => "objectify/rails/objectify",
+               :defaults   => {:objectify => {:resource => :pictures}}}
+      @rails_mapper.should have_received(:resources).
+                            with(:pictures, opts)
+    end
+
+    it "creates an action for each RESOURCE_ACTIONS" do
+      opts = {
+        :create => {
+          :policies => :blocked_user,
+          :service  => :picture_creation_v2
+        },
+        :policies => :some_policy
+      }
+      Objectify::Rails::Routing::RESOURCE_ACTIONS.each do |action|
+        @action_factory.should have_received(:new).
+                                with(:pictures, action, opts, @policies)
+      end
+    end
+
+    it "appends each of the actions to the objectify object" do
+      @objectify.should have_received(:append_action).
+                          with(@action).times(7)
+    end
+  end
+
+  context "adding a resource with its own defaults" do
+    before do
+      @mapper.resources(:pictures, :policies => :some_policy,
+                                   :create   => {
+                                      :policies => :blocked_user,
+                                      :service => :picture_creation_v2
+                                   },
+                                   :defaults => {:some => :bullshit})
+    end
+
+    it "correctly adds the resource to the rails mapper" do
+      opts = { :controller => "objectify/rails/objectify",
+               :defaults   => {:objectify => {:resource => :pictures},
+                               :some      => :bullshit}}
       @rails_mapper.should have_received(:resources).
                             with(:pictures, opts)
     end

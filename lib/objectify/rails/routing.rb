@@ -26,9 +26,12 @@ module Objectify
           objectify_options = extract_objectify_options(options)
           rails_options     = options.merge(RAILS_OPTIONS)
 
-          @rails_mapper.resources(*(args + [rails_options]))
-
           args.each do |resource_name|
+            objectify_defaults = {:objectify => {:resource => resource_name}}
+            defaults = (rails_options[:defaults] || {}).merge(objectify_defaults)
+            with_defaults = rails_options.merge(:defaults => defaults)
+            @rails_mapper.resources(resource_name, with_defaults)
+
             RESOURCE_ACTIONS.each do |action_name|
               action = @action_factory.new(resource_name,
                                            action_name,
