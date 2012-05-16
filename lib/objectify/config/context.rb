@@ -20,6 +20,11 @@ module Objectify
         @policy_responders.merge!(responders)
       end
 
+      def policy_responder(policy)
+        @policy_responders[policy] ||
+          raise(ArgumentError, "Can't find a responder for #{policy}.")
+      end
+
       def append_defaults(defaults)
         @policies = @policies_factory.new(defaults)
       end

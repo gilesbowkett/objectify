@@ -21,6 +21,15 @@ describe "Objectify::Config::Context" do
                     :blocked_profile => :unauthorized}
       @context.policy_responders.should == responders
     end
+
+    it "retrieves responders by policy name" do
+      @context.policy_responder(:authenticated).should == :unauthenticated
+    end
+
+    it "raises an error when a responder is missing" do
+      f = lambda { @context.policy_responder(:missing) }
+      f.should raise_error
+    end
   end
 
   context "setting defaults" do
