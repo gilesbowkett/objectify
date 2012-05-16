@@ -4,6 +4,7 @@ module Objectify
   module Config
     class Context
       attr_reader :policy_responders, :defaults, :actions, :policies
+      attr_writer :injector, :resolver_locator, :executor
 
       def initialize(resource_factory = Resource,
                      policies_factory = Policies)
@@ -30,6 +31,18 @@ module Objectify
       def action(route)
         @actions[route] ||
           raise(ArgumentError, "No action matching #{route} was found.")
+      end
+
+      def injector
+        @injector ||= Injector.new(resolver_locator)
+      end
+
+      def resolver_locator
+        @resolver_locator ||= MultiResolverLocator.new
+      end
+
+      def executor
+        @executor ||= Executor.new(injector)
       end
     end
   end
