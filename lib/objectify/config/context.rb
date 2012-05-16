@@ -4,7 +4,7 @@ require "objectify/config/policies"
 module Objectify
   module Config
     class Context
-      attr_reader :policy_responders, :defaults, :resources, :policies
+      attr_reader :policy_responders, :defaults, :actions, :policies
 
       def initialize(resource_factory = Resource,
                      policies_factory = Policies)
@@ -13,7 +13,7 @@ module Objectify
 
         @policy_responders = {}
         @defaults = {}
-        @resources = {}
+        @actions = {}
       end
 
       def append_policy_responders(responders)
@@ -24,20 +24,13 @@ module Objectify
         @policies = @policies_factory.new(defaults)
       end
 
-      def append_resources(*resources)
-        options = resources.extract_options!
-        resources.each do |resource|
-          @resources[resource] = @resource_factory.new(resource, options)
-        end
+      def append_action(action)
+        @actions[action.route] = action
       end
 
-      def child(step)
-        step.type == :resource ||
-          raise(ArgumentError, "No children of type #{type}.")
-
-        name = step.name
-        @resources[name] ||
-          raise(ArgumentError, "Can't find a resource named #{name}.")
+      def action(route)
+        @actions[route] ||
+          raise(ArgumentError, "No action matching #{route} was found.")
       end
     end
   end

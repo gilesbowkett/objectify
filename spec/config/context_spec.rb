@@ -6,9 +6,6 @@ describe "Objectify::Config::Context" do
     @policies = stub("Policies")
     @policies_factory = stub("PoliciesFactory", :new => @policies)
 
-    @resource = stub("Resource")
-    @resource_factory = stub("ResourceFactory", :new => @resource)
-
     @context = Objectify::Config::Context.new(@resource_factory,
                                               @policies_factory)
   end
@@ -38,30 +35,19 @@ describe "Objectify::Config::Context" do
     end
   end
 
-  context "appending resources" do
+  context "appending actions" do
     before do
-      @opts = {:policies => [:x,:y,:z]}
-      @context.append_resources(:pictures, @opts)
+      @route = stub("Route")
+      @action = stub("Action", :route => @route)
+      @context.append_action(@action)
     end
 
-    it "creates and stores a resource using the factory" do
-      @resource_factory.should have_received(:new).with(:pictures, @opts)
-      @context.resources[:pictures].should == @resource
+    it "retrieves actions by route" do
+      @context.action(@route).should == @action
     end
 
-    it "returns resource children by name" do
-      step = stub("Step", :type => :resource, :name => :pictures)
-      @context.child(step).should == @resource
-    end
-
-    it "raises on missing steps" do
-      step = stub("Step", :type => :resource, :name => :missing)
-      lambda { @context.child(step) }.should raise_error
-    end
-
-    it "raises when an invalid type of child is asked for" do
-      step = stub("Step", :type => :bogus, :name => :pictures)
-      lambda { @resource.child(step) }.should raise_error
+    it "raises an error when no action for a route exists" do
+      lambda { @context.action(stub()) }.should raise_error
     end
   end
 end
