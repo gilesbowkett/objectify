@@ -17,10 +17,19 @@ describe "Objectify::Config::Action" do
     @merged_policies  = stub("MergedPolicies")
     @default_policies = stub("PolicyConf", :merge => @merged_policies)
 
+    @route            = stub("Route")
+    @route_factory    = stub("RouteFactory", :new => @route)
+
     @action = Objectify::Config::Action.new(:pictures,
                                             :index,
                                             @options,
-                                            @default_policies)
+                                            @default_policies,
+                                            @route_factory)
+  end
+
+  it "creates and stores a route from the route factory" do
+    @route_factory.should have_received(:new).with(:pictures, :index)
+    @action.route.should == @route
   end
 
   it "stores its resource_name" do
