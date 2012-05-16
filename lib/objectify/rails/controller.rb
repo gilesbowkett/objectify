@@ -41,7 +41,7 @@ module Objectify
         end
         
         def executor
-          @executor ||= Objectify::Executor.new(injector)
+          objectify.executor
         end
 
         def policy_chain_executor
