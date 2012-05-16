@@ -1,3 +1,7 @@
+require "objectify/resolver_locator"
+require "objectify/executor"
+require "objectify/policy_chain_executor"
+
 module Objectify
   module Rails
     module Controller
@@ -26,7 +30,8 @@ module Objectify
         end
 
         def request_resolver
-          @request_resolver ||= Objectify::NamedValueResolver.new.tap do |resolver|
+          klass = Objectify::NamedValueResolverLocator
+          @request_resolver ||= klass.new.tap do |resolver|
             resolver.add(:controller, self)
             resolver.add(:params, params)
           end
