@@ -3,7 +3,7 @@ $:.push File.expand_path("../lib", __FILE__)
 require "objectify/version"
 
 Gem::Specification.new do |s|
-  s.name        = "objectify"
+  s.name        = "bitlove-objectify"
   s.version     = Objectify::VERSION
   s.authors     = ["James Golick"]
   s.email       = ["jamesgolick@gmail.com"]
