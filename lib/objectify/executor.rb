@@ -6,7 +6,8 @@ module Objectify
     end
 
     def call(name, type)
-      @injector.call(@instantiator.call(name, type), :call)
+      method = type == :policy ? :allowed? : :call
+      @injector.call(@instantiator.call(name, type), method)
     end
   end
 end
