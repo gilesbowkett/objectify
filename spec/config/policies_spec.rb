@@ -16,7 +16,8 @@ describe "Objectify::Config::Policies" do
     @policies.skip_policies.should == [:b]
   end
 
-  it "can merge with other Policies objects" do
-    @policies.merge(@policies2).policies.should == [:a]
+  it "can merge with hashes of policy configs" do
+    @policies.merge({:skip_policies => :c},
+                    {:policies => :b}).policies.should == [:a, :b]
   end
 end

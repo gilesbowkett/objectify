@@ -8,9 +8,12 @@ module Objectify
         @skip_policies = [*options[:skip_policies]]
       end
 
-      def merge(other)
-        self.class.new(:policies => @policies - @skip_policies +
-                                      other.policies - other.skip_policies)
+      def merge(*others)
+        result = others.inject(@policies - @skip_policies) do |total, opts|
+          total + [*opts[:policies]] - [*opts[:skip_policies]]
+        end
+
+        self.class.new(:policies => result)
       end
     end
   end
