@@ -6,8 +6,7 @@ describe "Objectify::Config::Context" do
     @policies = stub("Policies")
     @policies_factory = stub("PoliciesFactory", :new => @policies)
 
-    @context = Objectify::Config::Context.new(@resource_factory,
-                                              @policies_factory)
+    @context = Objectify::Config::Context.new(@policies_factory)
   end
 
   context "appending policy responders" do
@@ -57,6 +56,17 @@ describe "Objectify::Config::Context" do
 
     it "raises an error when no action for a route exists" do
       lambda { @context.action(stub()) }.should raise_error
+    end
+  end
+  
+  context "when there are no default policies" do
+    before do
+      @context = Objectify::Config::Context.new
+    end
+
+    it "returns an empty policies objectify" do
+      @context.policies.policies.should be_empty
+      @context.policies.skip_policies.should be_empty
     end
   end
 end

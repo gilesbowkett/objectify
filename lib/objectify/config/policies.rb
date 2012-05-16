@@ -3,7 +3,7 @@ module Objectify
     class Policies
       attr_reader :policies, :skip_policies
 
-      def initialize(options)
+      def initialize(options = {})
         @policies = [*options[:policies]]
         @skip_policies = [*options[:skip_policies]]
       end
