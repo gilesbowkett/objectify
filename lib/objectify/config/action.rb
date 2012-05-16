@@ -12,8 +12,19 @@ module Objectify
         @resource_name = resource_name
         @name = name
         @policies = default_policies.merge(options, options[name])
-        @service = options[name][:service]
-        @responder = options[name][:responder]
+
+        if options[name]
+          @service = options[name][:service]
+          @responder = options[name][:responder]
+        end
+      end
+
+      def service
+        @service ||= [resource_name, name].join("_").to_sym
+      end
+
+      def responder
+        @responder ||= [resource_name, name].join("_").to_sym
       end
     end
   end
