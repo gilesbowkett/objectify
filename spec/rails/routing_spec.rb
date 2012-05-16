@@ -29,7 +29,7 @@ describe "Objectify::Rails::Routing::ObjectifyMapper" do
     end
 
     it "correctly adds the resource to the rails mapper" do
-      opts = { :controller => "objectify/rails/controller" }
+      opts = { :controller => "objectify/rails/objectify" }
       @rails_mapper.should have_received(:resources).
                             with(:pictures, opts)
     end

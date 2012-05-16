@@ -10,7 +10,7 @@ module Objectify
 
       class ObjectifyMapper
         RAILS_OPTIONS = {
-          :controller => "objectify/rails/controller"
+          :controller => "objectify/rails/objectify"
         }.freeze
 
         def initialize(rails_mapper,
