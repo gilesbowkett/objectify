@@ -1,3 +1,5 @@
+require "objectify/resolver"
+
 module Objectify
   class ArrayResolverLocator
     def initialize(resolvers)
@@ -11,7 +13,7 @@ module Objectify
 
   class MultiResolverLocator
     def initialize(locators)
-      @locators = locators
+      @locators = [*locators]
     end
 
     def call(name)
