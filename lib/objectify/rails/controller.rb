@@ -25,7 +25,7 @@ module Objectify
 
       private
         def objectify
-          Rails.application.objectify
+          ::Rails.application.objectify
         end
 
         def injector
