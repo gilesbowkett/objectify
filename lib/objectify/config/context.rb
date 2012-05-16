@@ -1,10 +1,14 @@
 require "objectify/config/policies"
+require "objectify/injector"
+require "objectify/instantiator"
+require "objectify/resolver_locator"
+require "objectify/executor"
 
 module Objectify
   module Config
     class Context
       attr_reader :policy_responders, :defaults, :actions, :policies
-      attr_writer :injector, :resolver_locator, :executor
+      attr_writer :injector, :resolver_locator, :instantiator, :executor
 
       def initialize(policies_factory = Policies)
         @policies_factory = policies_factory
@@ -50,8 +54,12 @@ module Objectify
                               )
       end
 
+      def instantiator
+        @instantiator ||= Instantiator.new(injector)
+      end
+
       def executor
-        @executor ||= Executor.new(injector)
+        @executor ||= Executor.new(injector, instantiator)
       end
     end
   end
