@@ -16,8 +16,8 @@ describe "Objectify::Config::Policies" do
     @policies.skip_policies.should == [:b]
   end
 
-  it "can merge with hashes of policy configs" do
+  it "can merge with hashes of policy configs (ignoring nils)" do
     @policies.merge({:skip_policies => :c},
-                    {:policies => :b}).should == [:a, :b]
+                    {:policies => :b}, nil).should == [:a, :b]
   end
 end

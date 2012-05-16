@@ -9,7 +9,7 @@ module Objectify
       end
 
       def merge(*others)
-        others.inject(@policies - @skip_policies) do |total, opts|
+        others.compact.inject(@policies - @skip_policies) do |total, opts|
           total + [*opts[:policies]] - [*opts[:skip_policies]]
         end
       end
