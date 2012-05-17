@@ -61,8 +61,7 @@ module Objectify
 
       def resolver_locator
         @resolver_locator ||= MultiResolverLocator.new(
-                                locator,
-                                ConstResolverLocator.new
+                                [locator, ConstResolverLocator.new]
                               )
       end
 
