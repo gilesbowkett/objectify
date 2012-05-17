@@ -51,6 +51,10 @@ module Objectify
           @application.objectify.append_policy_responders(options)
         end
 
+        def resolutions(options)
+          @application.objectify.append_resolutions(options)
+        end
+
         private
           def extract_objectify_options(options)
             Hash[*(RESOURCE_ACTIONS + OBJECTIFY_OPTIONS).map do |key|

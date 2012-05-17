@@ -7,7 +7,8 @@ describe "Objectify::Rails::Routing::ObjectifyMapper" do
     @objectify      = stub("Objectify",   :append_policy_responders => nil,
                                           :append_defaults          => nil,
                                           :append_action            => nil,
-                                          :policies  => @policies)
+                                          :policies  => @policies,
+                                          :append_resolutions       => nil)
     @rails_mapper   = stub("RailsMapper", :resources => nil,
                                           :match     => nil)
     @application    = stub("Application", :objectify => @objectify)
@@ -112,6 +113,18 @@ describe "Objectify::Rails::Routing::ObjectifyMapper" do
 
     it "hands the policy responders to the objectify context" do
       @objectify.should have_received(:append_policy_responders).
+                          with(@opts)
+    end
+  end
+
+  context "adding resolutions" do
+    before do
+      @opts = { :authenticated => :unauthenticated_responder }
+      @mapper.resolutions @opts
+    end
+
+    it "hands them to the context" do
+      @objectify.should have_received(:append_resolutions).
                           with(@opts)
     end
   end
