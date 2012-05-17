@@ -61,6 +61,12 @@ module Objectify
       def executor
         @executor ||= Executor.new(injector, instantiator)
       end
+
+      def reload
+        instance_variables.each do |name|
+          instance_variable_set(name, nil)
+        end
+      end
     end
   end
 end
