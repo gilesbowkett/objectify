@@ -14,3 +14,15 @@ describe "Objectify::NamedValueResolver" do
     @named_value_resolver.call.should == :value
   end
 end
+
+class MyResolver; end
+
+describe "Objectify::NameTranslationResolver" do
+  before do
+    @resolver = Objectify::NameTranslationResolver.new(:a, :my_resolver)
+  end
+
+  it "instantiates resolvers" do
+    @resolver.call.should be_instance_of(MyResolver)
+  end
+end
