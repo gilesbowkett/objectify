@@ -41,6 +41,9 @@ module Objectify
           @request_resolver ||= klass.new.tap do |resolver|
             resolver.add(:controller, self)
             resolver.add(:params, params)
+            resolver.add(:session, session)
+            resolver.add(:request, request)
+            resolver.add(:response, response)
           end
         end
         
