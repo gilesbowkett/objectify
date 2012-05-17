@@ -20,9 +20,9 @@ module Objectify
             if policy_chain_executor.call(action)
               service_result = executor.call(action.service, :service)
               request_resolver.add(:service_result, service_result)
-            end
 
-            executor.call(action.responder, :responder)
+              executor.call(action.responder, :responder)
+            end
           end
         end
       end
