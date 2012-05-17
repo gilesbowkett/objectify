@@ -1,6 +1,7 @@
 require "objectify/config/policies"
 require "objectify/injector"
 require "objectify/instantiator"
+require "objectify/resolver"
 require "objectify/resolver_locator"
 require "objectify/executor"
 
@@ -56,7 +57,7 @@ module Objectify
       end
 
       def locator
-        @locator ||= NamedValueResolverLocator.new
+        @locator ||= NamedValueResolverLocator.new(NameTranslationResolver)
       end
 
       def resolver_locator
