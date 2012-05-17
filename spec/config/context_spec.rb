@@ -69,4 +69,17 @@ describe "Objectify::Config::Context" do
       @context.policies.skip_policies.should be_empty
     end
   end
+
+  context "appending resolutions" do
+    before do
+      @locator = stub("ResolverLocator", :add => nil)
+      @context = Objectify::Config::Context.new(nil)
+      @context.locator = @locator
+      @context.append_resolutions :something => String.new
+    end
+
+    it "adds them to a locator it has" do
+      @locator.should have_received(:add).with(:something, String.new)
+    end
+  end
 end

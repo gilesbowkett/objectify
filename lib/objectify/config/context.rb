@@ -8,7 +8,8 @@ module Objectify
   module Config
     class Context
       attr_reader :policy_responders, :defaults, :actions, :policies
-      attr_writer :injector, :resolver_locator, :instantiator, :executor
+      attr_writer :injector, :resolver_locator, :instantiator, :executor,
+                  :locator
 
       def initialize(policies_factory = Policies)
         @policies_factory = policies_factory
@@ -48,8 +49,19 @@ module Objectify
         @injector ||= Injector.new(resolver_locator)
       end
 
+      def append_resolutions(opts)
+        opts.each do |k,v|
+          locator.add(k, v)
+        end
+      end
+
+      def locator
+        @locator ||= NamedValueResolverLocator.new
+      end
+
       def resolver_locator
         @resolver_locator ||= MultiResolverLocator.new(
+                                locator,
                                 ConstResolverLocator.new
                               )
       end
