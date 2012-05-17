@@ -1,13 +1,17 @@
 require "objectify/resolver_locator"
 require "objectify/executor"
 require "objectify/policy_chain_executor"
+require "objectify/instrumentation"
 
 module Objectify
   module Rails
     module ControllerBehaviour
+      include Instrumentation
+
       def method_missing(name, *args, &block)
         route = Objectify::Route.new(params[:objectify][:resource].to_sym, params[:action].to_sym)
         action = objectify.action(route)
+        instrument("start_processing.objectify", :route => route)
 
         objectify.resolver_locator.with_context(request_resolver) do
           respond_to do |format|
