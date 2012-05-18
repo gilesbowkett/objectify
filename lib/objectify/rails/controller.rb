@@ -5,28 +5,7 @@ require "objectify/instrumentation"
 
 module Objectify
   module Rails
-    module ControllerBehaviour
-      include Instrumentation
-
-      def method_missing(name, *args, &block)
-        route = Objectify::Route.new(params[:objectify][:resource].to_sym, params[:action].to_sym)
-        action = objectify.action(route)
-        instrument("start_processing.objectify", :route => route)
-
-        objectify.resolver_locator.with_context(request_resolver) do
-          respond_to do |format|
-            request_resolver.add(:format, format)
-
-            if policy_chain_executor.call(action)
-              service_result = executor.call(action.service, :service)
-              request_resolver.add(:service_result, service_result)
-
-              executor.call(action.responder, :responder)
-            end
-          end
-        end
-      end
-
+    module ControllerHelpers
       private
         def objectify
           ::Rails.application.objectify
@@ -54,6 +33,37 @@ module Objectify
         def policy_chain_executor
           @policy_chain_executor ||= Objectify::PolicyChainExecutor.new(executor, objectify)
         end
+
+        def action
+          @action ||= if params[:objectify]
+            route = Objectify::Route.new(params[:objectify][:resource].to_sym, params[:action].to_sym)
+            objectify.action(route)
+          else
+            objectify.legacy_action(params[:controller], params[:action])
+          end
+        end
+
+        def execute_policy_chain
+          policy_chain_executor.call(action)
+        end
+    end
+
+    module ControllerBehaviour
+      include ControllerHelpers
+      include Instrumentation
+
+      def method_missing(name, *args, &block)
+        instrument("start_processing.objectify", :route => route)
+
+        objectify.resolver_locator.with_context(request_resolver) do
+          if execute_policy_chain
+            service_result = executor.call(action.service, :service)
+            request_resolver.add(:service_result, service_result)
+
+            executor.call(action.responder, :responder)
+          end
+        end
+      end
     end
 
     class ObjectifyController < ActionController::Base
