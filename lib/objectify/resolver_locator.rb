@@ -50,7 +50,8 @@ module Objectify
   end
 
   class ConstResolverLocator
-    def initialize
+    def initialize(namespace = nil)
+      @namespace = namespace
       @cache = {}
     end
 
@@ -61,7 +62,8 @@ module Objectify
     private
       def locate_and_store(name)
         begin
-          [name, :resolver].join("_").classify.constantize.new.tap do |obj|
+          const_name = [@namespace, [name, :resolver].join("_")].compact.join("/")
+          const_name.classify.constantize.new.tap do |obj|
             @cache[name] = obj
           end
         rescue NameError

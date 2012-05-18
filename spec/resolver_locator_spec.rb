@@ -63,25 +63,47 @@ describe "Objectify::NamedValueResolverLocator" do
   end
 end
 
-class MyResolver
-end
+class MyResolver; end
+module Something; class MyResolver; end; end
 
 describe "Objectify::ConstResolverLocator" do
-  before do
-    @locator = Objectify::ConstResolverLocator.new
+  context "in the global namespace" do
+    before do
+      @locator = Objectify::ConstResolverLocator.new
+    end
+
+    it "finds resolvers by const name" do
+      @locator.call(:my).should be_instance_of(MyResolver)
+    end
+
+    it "returns nil if the const is missing" do
+      @locator.call(:missing).should be_nil
+    end
+
+    it "keeps a cache of instantiated resolvers" do
+      obj1 = @locator.call(:my)
+      obj2 = @locator.call(:my)
+      obj1.object_id.should == obj2.object_id
+    end
   end
 
-  it "finds resolvers by const name" do
-    @locator.call(:my).should be_instance_of(MyResolver)
-  end
+  context "in an arbitrary namespace" do
+    before do
+      @locator = Objectify::ConstResolverLocator.new("something")
+    end
 
-  it "returns nil if the const is missing" do
-    @locator.call(:missing).should be_nil
-  end
+    it "finds resolvers by const name" do
+      @locator.call(:my).should be_instance_of(Something::MyResolver)
+    end
 
-  it "keeps a cache of instantiated resolvers" do
-    obj1 = @locator.call(:my)
-    obj2 = @locator.call(:my)
-    obj1.object_id.should == obj2.object_id
+    it "returns nil if the const is missing" do
+      @locator.call(:missing).should be_nil
+    end
+
+    it "keeps a cache of instantiated resolvers" do
+      obj1 = @locator.call(:my)
+      obj2 = @locator.call(:my)
+      obj1.object_id.should == obj2.object_id
+    end
   end
 end
