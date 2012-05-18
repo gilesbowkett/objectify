@@ -1,3 +1,4 @@
+require "objectify/config/action"
 require "objectify/config/policies"
 require "objectify/injector"
 require "objectify/instantiator"
@@ -12,8 +13,9 @@ module Objectify
       attr_writer :injector, :resolver_locator, :instantiator, :executor,
                   :locator
 
-      def initialize(policies_factory = Policies)
+      def initialize(policies_factory = Policies, action_factory = Action)
         @policies_factory = policies_factory
+        @action_factory   = action_factory
 
         @policy_responders = {}
         @defaults = {}
@@ -44,6 +46,10 @@ module Objectify
       def action(route)
         @actions[route] ||
           raise(ArgumentError, "No action matching #{route} was found.")
+      end
+
+      def legacy_action(controller, action)
+        @action_factory.new(controller, action, {}, policies)
       end
 
       def injector

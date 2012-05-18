@@ -82,4 +82,21 @@ describe "Objectify::Config::Context" do
       @locator.should have_received(:add).with(:something, String.new)
     end
   end
+
+  context "the legacy_action" do
+    before do
+      @action = stub("Action")
+      @action_factory = stub("ActionFactory", :new => @action)
+      @policies = stub("Policies")
+      @policies_factory = stub("PoliciesFactory", :new => @policies)
+
+      @context = Objectify::Config::Context.new(@policies_factory, @action_factory)
+      @result = @context.legacy_action(:controller, :action)
+    end
+
+    it "creates a new action with the controller and action name and its policies" do
+      @action_factory.should have_received(:new).
+                              with(:controller, :action, {}, @policies)
+    end
+  end
 end
