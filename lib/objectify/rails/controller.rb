@@ -21,6 +21,7 @@ module Objectify
             resolver.add(:controller, self)
             resolver.add(:params, params)
             resolver.add(:session, session)
+            resolver.add(:cookies, cookies)
             resolver.add(:request, request)
             resolver.add(:response, response)
           end
