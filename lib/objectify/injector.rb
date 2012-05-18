@@ -14,7 +14,7 @@ module Objectify
         method_obj           = method_object(object, method)
         resolvers            = method_obj.parameters.map do |reqd, name|
           @resolver_locator.call(name) if reqd == :req
-        end
+        end.compact
         arguments            = resolvers.map do |resolver|
           call(resolver, :call)
         end

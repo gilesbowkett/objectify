@@ -16,6 +16,9 @@ describe "Objectify::Injector" do
     def requires_params(params)
       params
     end
+
+    def optional_arg(asdf=true)
+    end
   end
 
   # gotta use a fake resolver here because mocha sucks balls lolruby
@@ -51,6 +54,11 @@ describe "Objectify::Injector" do
     it "calls the resolver_locator to get the resolver" do
       @injector.call(MyInjectedClass, :new)
       @resolver_locator.should have_received(:call).with(:some_dependency)
+    end
+
+    it "supports optional arguments" do
+      obj = MyInjectedClass.new("Asdf")
+      lambda { @injector.call(obj, :optional_arg) }.should_not raise_error
     end
   end
 
