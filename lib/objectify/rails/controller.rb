@@ -36,15 +36,18 @@ module Objectify
           @policy_chain_executor ||= Objectify::PolicyChainExecutor.new(executor, objectify)
         end
 
-        def action
-          @action ||= if params[:objectify]
-            route = Objectify::Route.new(params[:objectify][:resource].to_sym, params[:action].to_sym)
-            objectify.action(route)
+        def objectify_route
+          @objectify_route ||= if params[:objectify]
+            Objectify::Route.new(params[:objectify][:resource].to_sym,
+                                 params[:action].to_sym)
           else
-            route = Objectify::Route.new(params[:controller].to_sym,
-                                         params[:action].to_sym)
-            objectify.legacy_action(route)
+            Objectify::Route.new(params[:controller].to_sym,
+                                 params[:action].to_sym)
           end
+        end
+
+        def action
+          @action ||= objectify.action(objectify_route)
         end
 
         def execute_policy_chain
@@ -70,7 +73,7 @@ module Objectify
       include Instrumentation
 
       def method_missing(name, *args, &block)
-        instrument("start_processing.objectify", :route => route)
+        instrument("start_processing.objectify", :route => objectify_route)
 
         execute_objectify_action
       end
@@ -81,7 +84,7 @@ module Objectify
       include Instrumentation
 
       def method_missing(name, *args, &block)
-        instrument("start_processing.objectify", :route => route)
+        instrument("start_processing.objectify", :route => objectify_route)
 
         if execute_policy_chain
           execute_objectify_action
