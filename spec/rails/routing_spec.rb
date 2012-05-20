@@ -128,4 +128,23 @@ describe "Objectify::Rails::Routing::ObjectifyMapper" do
                           with(@opts)
     end
   end
+
+  context "adding a legacy action" do
+    before do
+      @opts = {:policies => "asdf"}
+      @mapper.legacy_action :controller, [:action1, :action2], @opts
+    end
+
+    it "creates actions for each of the specified actions" do
+      @action_factory.should have_received(:new).
+                              with(:controller, :action1, @opts, @policies)
+
+      @action_factory.should have_received(:new).
+                              with(:controller, :action2, @opts, @policies)
+    end
+
+    it "passes the actions to the objectify objects" do
+      @objectify.should have_received(:append_action).with(@action).twice
+    end
+  end
 end

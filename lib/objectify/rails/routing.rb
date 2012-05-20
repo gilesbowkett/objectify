@@ -55,6 +55,16 @@ module Objectify
           @application.objectify.append_resolutions(options)
         end
 
+        def legacy_action(controller, actions, options)
+          [*actions].each do |action_name|
+            action = @action_factory.new(controller,
+                                         action_name,
+                                         options,
+                                         @application.objectify.policies)
+            @application.objectify.append_action(action)
+          end
+        end
+
         private
           def extract_objectify_options(options)
             Hash[*(RESOURCE_ACTIONS + OBJECTIFY_OPTIONS).map do |key|
