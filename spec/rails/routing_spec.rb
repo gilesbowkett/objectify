@@ -8,7 +8,8 @@ describe "Objectify::Rails::Routing::ObjectifyMapper" do
                                           :append_defaults          => nil,
                                           :append_action            => nil,
                                           :policies  => @policies,
-                                          :append_resolutions       => nil)
+                                          :append_resolutions       => nil,
+                                          :objectify_controller => "some_controller")
     @rails_mapper   = stub("RailsMapper", :resources => nil,
                                           :match     => nil)
     @application    = stub("Application", :objectify => @objectify)
@@ -30,7 +31,7 @@ describe "Objectify::Rails::Routing::ObjectifyMapper" do
     end
 
     it "correctly adds the resource to the rails mapper" do
-      opts = { :controller => "objectify/rails/objectify",
+      opts = { :controller => @objectify.objectify_controller,
                :defaults   => {:objectify => {:resource => :pictures}}}
       @rails_mapper.should have_received(:resources).
                             with(:pictures, opts)
@@ -67,7 +68,7 @@ describe "Objectify::Rails::Routing::ObjectifyMapper" do
     end
 
     it "correctly adds the resource to the rails mapper" do
-      opts = { :controller => "objectify/rails/objectify",
+      opts = { :controller => @objectify.objectify_controller,
                :defaults   => {:objectify => {:resource => :pictures},
                                :some      => :bullshit}}
       @rails_mapper.should have_received(:resources).
@@ -91,6 +92,26 @@ describe "Objectify::Rails::Routing::ObjectifyMapper" do
     it "appends each of the actions to the objectify object" do
       @objectify.should have_received(:append_action).
                           with(@action).times(7)
+    end
+  end
+
+  context "adding a resource with an alternative objectify_controller" do
+    before do
+      @objectify.stubs(:objectify_controller).returns("asdfbsdf")
+      @mapper.resources(:pictures, :policies => :some_policy,
+                                   :create   => {
+                                      :policies => :blocked_user,
+                                      :service => :picture_creation_v2
+                                   },
+                                   :defaults => {:some => :bullshit})
+    end
+
+    it "correctly adds the resource to the rails mapper" do
+      opts = { :controller => @objectify.objectify_controller,
+               :defaults   => {:objectify => {:resource => :pictures},
+                               :some      => :bullshit}}
+      @rails_mapper.should have_received(:resources).
+                            with(:pictures, opts)
     end
   end
 

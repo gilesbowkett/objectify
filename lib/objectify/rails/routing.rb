@@ -9,10 +9,6 @@ module Objectify
       OBJECTIFY_OPTIONS = [:policies].freeze
 
       class ObjectifyMapper
-        RAILS_OPTIONS = {
-          :controller => "objectify/rails/objectify"
-        }.freeze
-
         def initialize(rails_mapper,
                        application = ::Rails.application,
                        action_factory = Config::Action)
@@ -24,7 +20,8 @@ module Objectify
         def resources(*args)
           options           = args.extract_options!
           objectify_options = extract_objectify_options(options)
-          rails_options     = options.merge(RAILS_OPTIONS)
+          controller        = @application.objectify.objectify_controller
+          rails_options     = options.merge(:controller => controller)
 
           args.each do |resource_name|
             objectify_defaults = {:objectify => {:resource => resource_name}}
