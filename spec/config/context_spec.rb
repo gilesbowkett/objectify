@@ -89,14 +89,32 @@ describe "Objectify::Config::Context" do
       @action_factory = stub("ActionFactory", :new => @action)
       @policies = stub("Policies")
       @policies_factory = stub("PoliciesFactory", :new => @policies)
+      @route = stub("Route", :resource => :controller, :action => :action)
 
       @context = Objectify::Config::Context.new(@policies_factory, @action_factory)
-      @result = @context.legacy_action(:controller, :action)
     end
 
-    it "creates a new action with the controller and action name and its policies" do
-      @action_factory.should have_received(:new).
-                              with(:controller, :action, {}, @policies)
+    context "when there's no legacy action config" do
+      before do
+        @result = @context.legacy_action(@route)
+      end
+
+      it "creates a new action with the controller and action name and its policies" do
+        @action_factory.should have_received(:new).
+                                with(:controller, :action, {}, @policies)
+      end
+    end
+
+    context "when there is a legacy action config" do
+      before do
+        @action = stub("Action", :route => @route)
+        @context.append_action(@action)
+        @result = @context.legacy_action(@route)
+      end
+
+      it "returns the existing action" do
+        @result.should == @action
+      end
     end
   end
 end

@@ -48,8 +48,9 @@ module Objectify
           raise(ArgumentError, "No action matching #{route} was found.")
       end
 
-      def legacy_action(controller, action)
-        @action_factory.new(controller, action, {}, policies)
+      def legacy_action(route)
+        @actions[route] ||
+          @action_factory.new(route.resource, route.action, {}, policies)
       end
 
       def injector
