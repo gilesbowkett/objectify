@@ -14,6 +14,5 @@ Description goes here.
 
 == Copyright
 
-Copyright (c) 2012 James Golick. See LICENSE.txt for
+Copyright (c) 2012 James Golick, BitLove Inc. See LICENSE.txt for
 further details.
-
