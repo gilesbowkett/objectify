@@ -9,6 +9,8 @@ require "objectify/executor"
 module Objectify
   module Config
     class Context
+      DONT_RELOAD = [:@objectify_controller].freeze
+
       attr_reader :policy_responders, :defaults, :actions, :policies
       attr_writer :injector, :resolver_locator, :instantiator, :executor,
                   :locator, :objectify_controller
@@ -87,7 +89,7 @@ module Objectify
 
       def reload
         instance_variables.each do |name|
-          instance_variable_set(name, nil)
+          instance_variable_set(name, nil) unless DONT_RELOAD.include?(name)
         end
       end
     end

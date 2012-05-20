@@ -127,5 +127,11 @@ describe "Objectify::Config::Context" do
       @context.objectify_controller = "asdf"
       @context.objectify_controller.should == "asdf"
     end
+
+    it "isn't affected by reloading" do
+      @context.objectify_controller = "asdf"
+      @context.reload
+      @context.objectify_controller.should == "asdf"
+    end
   end
 end
