@@ -117,4 +117,15 @@ describe "Objectify::Config::Context" do
       end
     end
   end
+
+  context "objectify_controller" do
+    it "defaults to objectify/rails/objectify" do
+      @context.objectify_controller.should == "objectify/rails/objectify"
+    end
+
+    it "is overridable" do
+      @context.objectify_controller = "asdf"
+      @context.objectify_controller.should == "asdf"
+    end
+  end
 end

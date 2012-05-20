@@ -11,7 +11,7 @@ module Objectify
     class Context
       attr_reader :policy_responders, :defaults, :actions, :policies
       attr_writer :injector, :resolver_locator, :instantiator, :executor,
-                  :locator
+                  :locator, :objectify_controller
 
       def initialize(policies_factory = Policies, action_factory = Action)
         @policies_factory = policies_factory
@@ -79,6 +79,10 @@ module Objectify
 
       def executor
         @executor ||= Executor.new(injector, instantiator)
+      end
+
+      def objectify_controller
+        @objectify_controller ||= "objectify/rails/objectify"
       end
 
       def reload
