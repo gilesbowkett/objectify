@@ -40,7 +40,9 @@ module Objectify
             route = Objectify::Route.new(params[:objectify][:resource].to_sym, params[:action].to_sym)
             objectify.action(route)
           else
-            objectify.legacy_action(params[:controller], params[:action])
+            route = Objectify::Route.new(params[:controller].to_sym,
+                                         params[:action].to_sym)
+            objectify.legacy_action(route)
           end
         end
 
