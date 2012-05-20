@@ -56,6 +56,24 @@ module Objectify
           yield
           objectify.resolver_locator.clear_context
         end
+
+        def execute_objectify_action
+          service_result = executor.call(action.service, :service)
+          request_resolver.add(:service_result, service_result)
+
+          executor.call(action.responder, :responder)
+        end
+    end
+
+    module LegacyControllerBehaviour
+      include ControllerHelpers
+      include Instrumentation
+
+      def method_missing(name, *args, &block)
+        instrument("start_processing.objectify", :route => route)
+
+        execute_objectify_action
+      end
     end
 
     module ControllerBehaviour
@@ -66,10 +84,7 @@ module Objectify
         instrument("start_processing.objectify", :route => route)
 
         if execute_policy_chain
-          service_result = executor.call(action.service, :service)
-          request_resolver.add(:service_result, service_result)
-
-          executor.call(action.responder, :responder)
+          execute_objectify_action
         end
       end
     end
