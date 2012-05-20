@@ -24,6 +24,7 @@ module Objectify
             resolver.add(:cookies, cookies)
             resolver.add(:request, request)
             resolver.add(:response, response)
+            resolver.add(:flash, flash)
           end
         end
         
