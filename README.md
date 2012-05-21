@@ -75,7 +75,7 @@ The flow of an objectify request is as follows:
     end
   ```
 
-## Custom injections
+## Custom Injections
 
   Several of the above methods have parameters named 'current_user'. By default, objectify won't know how to inject a parameter by that name, so it'll raise an error when it encounters one. Here's how to create a custom resolver for it that'll automatically get found by name.
 
