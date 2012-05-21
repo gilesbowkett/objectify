@@ -86,6 +86,7 @@ The flow of an objectify request is as follows:
         @user_finder = user_finder
       end
 
+      # note that resolvers themselves get injected
       def call(session)
         @user_finder.find_by_id(session[:current_user_id])
       end
