@@ -6,7 +6,7 @@ Objectify is a framework that codifies good object oriented design practices for
 
 Objectify has two primary components:
 
-  1. A dependency injection framework. Objectify automatically injects dependencies in to objects in manages based on parameter names. So, if you have a service method signature like: PictureCreationService#call(params), objectify will automatically inject the request's params when it calls that method. It's very simple to create custom injections by implementing Resolver classes. More on that below.
+  1. A dependency injection framework. Objectify automatically injects dependencies in to objects it manages based on parameter names. So, if you have a service method signature like: PictureCreationService#call(params), objectify will automatically inject the request's params when it calls that method. It's very simple to create custom injections by implementing Resolver classes. More on that below.
 
   2. A request execution framework that separates the responsibilities that are typically jammed together in rails controller actions in to 3 types of components: Policies, Services, and Responders. Properly separating and assigning these responsibilities makes for far more testable code, and facilitates better reuse of components.
 
