@@ -1,14 +1,14 @@
-= objectify
+# objectify
 
 Objectify is a framework that codifies good object oriented design practices for building maintainable rails applications.
 
-= How it works
+## How it works
 
 Objectify has two primary components:
 
   1. A dependency injection framework. Objectify automatically injects dependencies in to objects in manages based on parameter names. So, if you have a service method signature like: PictureCreationService#call(params), objectify will automatically inject the request's params when it calls that method. It's very simple to create custom injections by implementing Resolver classes. More on that below.
 
-  2. A request execution framework that separates the responsibilities that are typically jammed together in rails controller actions in to 3 types of components: Policies, Services, and Responders. Properly separating and assigning these responsibilities makes for far more testable code, and better reuse of components.
+  2. A request execution framework that separates the responsibilities that are typically jammed together in rails controller actions in to 3 types of components: Policies, Services, and Responders. Properly separating and assigning these responsibilities makes for far more testable code, and facilitates better reuse of components.
 
 The flow of an objectify request is as follows:
 
@@ -47,7 +47,34 @@ MyApp::Application.routes.draw do
 end
 ```
 
-== Copyright
+  2. If all the policies succeed, the service for that action is executed. A service is typically responsible for fetching and / or manipulating data.
+
+  A very simple example of a service:
+```ruby
+class PicturesCreateService
+  # the current_user and the request's params will be automatically injected here.
+  def call(current_user, params)
+    current_user.pictures.create params[:picture]
+  end
+end
+```
+
+  3. Finally, the responder is executed. Following with our Pictures#create example:
+
+```ruby
+class PicturesCreateResponder
+  # service_result is exactly what it sounds like
+  def call(service_result, controller)
+    if service_result.persisted?
+      controller.redirect_to service_result
+    else
+      controller.render :template => "pictures/edit.html.erb"
+    end
+  end
+end
+```
+
+## Copyright
 
 Copyright (c) 2012 James Golick, BitLove Inc. See LICENSE.txt for
 further details.
