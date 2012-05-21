@@ -92,7 +92,7 @@ The flow of an objectify request is as follows:
     end
   ```
 
-### Why did you constructor-inject the User constant in to the CurrentUserResolver
+### Why did you constructor-inject the User constant in to the CurrentUserResolver?
   
   Because that makes it possible to test in isolation.
 
