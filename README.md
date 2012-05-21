@@ -75,6 +75,44 @@ The flow of an objectify request is as follows:
     end
   ```
 
+## Custom injections
+
+  Several of the above methods have parameters named 'current_user'. By default, objectify won't know how to inject a parameter by that name, so it'll raise an error when it encounters one. Here's how to create a custom resolver for it that'll automatically get found by name.
+
+  ```ruby
+    # app/resolvers/current_user_resolver.rb
+    class CurrentUserResolver
+      def initialize(user_finder = User)
+        @user_finder = user_finder
+      end
+
+      def call(session)
+        @user_finder.find_by_id(session[:current_user_id])
+      end
+    end
+  ```
+
+### Why did you constructor-inject the User constant in to the CurrentUserResolver
+  
+  Because that makes it possible to test in isolation.
+
+  ```ruby
+    describe "CurrentUserResolver" do
+      before do
+        @user        = stub("User")
+        @user_finder = stub("UserFinder", :find_by_id => nil)
+        @user_finder.stubs(:find_by_id).with(10).returns(@user)
+
+        @resolver = CurrentUserResolver.new(@user_finder)
+      end
+
+      it "returns whatever the finder returns" do
+        @resolver.call({:current_user_id => 42}).should be_nil
+        @resolver.call({:current_user_id => 10}).should == @user
+      end
+    end
+  ```
+
 ## Copyright
 
 Copyright (c) 2012 James Golick, BitLove Inc. See LICENSE.txt for
