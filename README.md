@@ -50,14 +50,15 @@ end
   2. If all the policies succeed, the service for that action is executed. A service is typically responsible for fetching and / or manipulating data.
 
   A very simple example of a service:
-```ruby
-class PicturesCreateService
-  # the current_user and the request's params will be automatically injected here.
-  def call(current_user, params)
-    current_user.pictures.create params[:picture]
+
+  ```ruby
+  class PicturesCreateService
+    # the current_user and the request's params will be automatically injected here.
+    def call(current_user, params)
+      current_user.pictures.create params[:picture]
+    end
   end
-end
-```
+  ```
 
   3. Finally, the responder is executed. Following with our Pictures#create example:
 
