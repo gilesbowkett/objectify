@@ -52,12 +52,12 @@ end
   A very simple example of a service:
 
   ```ruby
-  class PicturesCreateService
-    # the current_user and the request's params will be automatically injected here.
-    def call(current_user, params)
-      current_user.pictures.create params[:picture]
+    class PicturesCreateService
+      # the current_user and the request's params will be automatically injected here.
+      def call(current_user, params)
+        current_user.pictures.create params[:picture]
+      end
     end
-  end
   ```
 
   3. Finally, the responder is executed. Following with our Pictures#create example:
