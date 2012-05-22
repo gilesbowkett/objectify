@@ -79,45 +79,6 @@ Objectify has two primary components:
   2. A dependency injection framework. Objectify automatically injects dependencies in to objects it manages based on parameter names. So, if you have a service method signature like: PictureCreationService#call(params), objectify will automatically inject the request's params when it calls that method. It's very simple to create custom injections by implementing Resolver classes. More on that below.
 
 
-## Custom Injections
-
-Several of the above methods have parameters named 'current_user'. By default, objectify won't know how to inject a parameter by that name, so it'll raise an error when it encounters one. Here's how to create a custom resolver for it that'll automatically get found by name.
-
-```ruby
-# app/resolvers/current_user_resolver.rb
-class CurrentUserResolver
-  def initialize(user_finder = User)
-    @user_finder = user_finder
-  end
-
-  # note that resolvers themselves get injected
-  def call(session)
-    @user_finder.find_by_id(session[:current_user_id])
-  end
-end
-```
-
-### Why did you constructor-inject the User constant in to the CurrentUserResolver?
-  
-Because that makes it possible to test in isolation.
-
-```ruby
-describe "CurrentUserResolver" do
-  before do
-    @user        = stub("User")
-    @user_finder = stub("UserFinder", :find_by_id => nil)
-    @user_finder.stubs(:find_by_id).with(10).returns(@user)
-
-    @resolver = CurrentUserResolver.new(@user_finder)
-  end
-
-  it "returns whatever the finder returns" do
-    @resolver.call({:current_user_id => 42}).should be_nil
-    @resolver.call({:current_user_id => 10}).should == @user
-  end
-end
-```
-
 ## What if I have a bunch of existing rails code?
 
 Objectify has a legacy mode that allows you to execute the policy chain as a before_filter in your ApplicationController. You can also configure policies (and skip_policies) for your "legacy" actions. That way, access control code is shared between the legacy and objectified components of your application.
@@ -162,6 +123,46 @@ module MyApp
   class Application < Rails::Application
     # ...snip...
     objectify.objectify_controller = "objectify"
+  end
+end
+```
+
+
+## Custom Injections
+
+Several of the above methods have parameters named 'current_user'. By default, objectify won't know how to inject a parameter by that name, so it'll raise an error when it encounters one. Here's how to create a custom resolver for it that'll automatically get found by name.
+
+```ruby
+# app/resolvers/current_user_resolver.rb
+class CurrentUserResolver
+  def initialize(user_finder = User)
+    @user_finder = user_finder
+  end
+
+  # note that resolvers themselves get injected
+  def call(session)
+    @user_finder.find_by_id(session[:current_user_id])
+  end
+end
+```
+
+### Why did you constructor-inject the User constant in to the CurrentUserResolver?
+  
+Because that makes it possible to test in isolation.
+
+```ruby
+describe "CurrentUserResolver" do
+  before do
+    @user        = stub("User")
+    @user_finder = stub("UserFinder", :find_by_id => nil)
+    @user_finder.stubs(:find_by_id).with(10).returns(@user)
+
+    @resolver = CurrentUserResolver.new(@user_finder)
+  end
+
+  it "returns whatever the finder returns" do
+    @resolver.call({:current_user_id => 42}).should be_nil
+    @resolver.call({:current_user_id => 10}).should == @user
   end
 end
 ```
