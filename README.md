@@ -180,6 +180,18 @@ module MyApp
 end
 ```
 
+## Credits
+
+  * Author: James Golick @jamesgolick
+  * Advice (and the idea for injections based on method parameter names): Gary Bernhardt @garybernhardt
+  * Feedback: Jake Douglas @jakedouglas
+  * Feedback: Julie Haché @juliehache
+  * The gem name: Andrew Kiellor @akiellor
+
+## The other objectify gem
+
+  If you were looking for the gem that *used* to be called objectify on rubygems.org, it's here: https://github.com/akiellor/objectify
+
 ## Copyright
 
 Copyright (c) 2012 James Golick, BitLove Inc. See LICENSE.txt for
