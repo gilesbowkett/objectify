@@ -12,69 +12,69 @@ Objectify has two primary components:
 
     1. The policy chain is resolved (based on the various levels of configuration) and executed. Objectify calls the #allowed?(...) method on each policy in the chain. If one of the policies fails, the chain short-circuits at that point, and objectify executes the configured responder for that policy.
 
-    An example Policy:
+      An example Policy:
 
-    ```ruby
-      class RequiresLoginPolicy
-        # more on how current user gets injected below
-        def allowed?(current_user) 
-          !current_user.nil?
+      ```ruby
+        class RequiresLoginPolicy
+          # more on how current user gets injected below
+          def allowed?(current_user) 
+            !current_user.nil?
+          end
         end
-      end
-    ```
+      ```
 
-    A responder, in case that policy fails.
+      A responder, in case that policy fails.
 
-    ```ruby
-      class UnauthenticatedResponder
-        # yes, at some point we probably need a better interface
-        # for handling responses, but this'll do for now.
-        def call(controller, renderer)
-          renderer.redirect_to controller.login_url
+      ```ruby
+        class UnauthenticatedResponder
+          # yes, at some point we probably need a better interface
+          # for handling responses, but this'll do for now.
+          def call(controller, renderer)
+            renderer.redirect_to controller.login_url
+          end
         end
-      end
-    ```
+      ```
 
-    Here's how you setup the RequiresLoginPolicy to run by default (you can configure specific actions to ignore it), and connect the policy with its responder.
+      Here's how you setup the RequiresLoginPolicy to run by default (you can configure specific actions to ignore it), and connect the policy with its responder.
 
-    ```ruby
-      # config/routes.rb
-      MyApp::Application.routes.draw do
-        objectify.defaults :policies => :requires_login
-        objectify.policy_responders :requires_login => :unauthenticated
-      end
-    ```
+      ```ruby
+        # config/routes.rb
+        MyApp::Application.routes.draw do
+          objectify.defaults :policies => :requires_login
+          objectify.policy_responders :requires_login => :unauthenticated
+        end
+      ```
 
     2. If all the policies succeed, the service for that action is executed. A service is typically responsible for fetching and / or manipulating data.
 
-    A very simple example of a service:
+      A very simple example of a service:
 
-    ```ruby
-      class PicturesCreateService
-        # the current_user and the request's params will be automatically injected here.
-        def call(current_user, params)
-          current_user.pictures.create params[:picture]
+      ```ruby
+        class PicturesCreateService
+          # the current_user and the request's params will be automatically injected here.
+          def call(current_user, params)
+            current_user.pictures.create params[:picture]
+          end
         end
-      end
-    ```
+      ```
 
     3. Finally, the responder is executed. Following with our Pictures#create example:
 
-    ```ruby
-      class PicturesCreateResponder
-        # service_result is exactly what it sounds like
-        def call(service_result, controller, renderer)
-          if service_result.persisted?
-            renderer.redirect_to service_result
-          else
-            # this is the only way that you can pass data to the view layer
-            # and you can only pass one thing. Hint: use a presenter.
-            renderer.data(service_result)
-            renderer.render :template => "pictures/edit.html.erb"
+      ```ruby
+        class PicturesCreateResponder
+          # service_result is exactly what it sounds like
+          def call(service_result, controller, renderer)
+            if service_result.persisted?
+              renderer.redirect_to service_result
+            else
+              # this is the only way that you can pass data to the view layer
+              # and you can only pass one thing. Hint: use a presenter.
+              renderer.data(service_result)
+              renderer.render :template => "pictures/edit.html.erb"
+            end
           end
         end
-      end
-    ```
+      ```
 
   2. A dependency injection framework. Objectify automatically injects dependencies in to objects it manages based on parameter names. So, if you have a service method signature like: PictureCreationService#call(params), objectify will automatically inject the request's params when it calls that method. It's very simple to create custom injections by implementing Resolver classes. More on that below.
 
