@@ -114,6 +114,54 @@ describe "CurrentUserResolver" do
 end
 ```
 
+## What if I have a bunch of existing rails code?
+
+Objectify has a legacy mode that allows you to execute the policy chain as a before_filter in your ApplicationController. You can also configure policies (and skip_policies) for your "legacy" actions. That way, access control code is shared between the legacy and objectified components of your application.
+
+I completely rewrote our legacy authentication system as a set of objectify policies, resolvers, and services - you can see an example of that at https://github.com/bitlove/objectify_auth.
+
+Here's how to run the policy chain in your ApplicationController - it'll figure out which policies to run itself:
+
+```ruby
+class ApplicationController < ActionController::Base
+  include Objectify::Rails::ControllerHelpers
+
+  around_filter :objectify_around_filter
+  before_filter :execute_policy_chain
+end
+```
+
+And to configure policies for a legacy action:
+
+```ruby
+# config/routes.rb
+MyApp::Application.routes.draw do
+  objectify.defaults :policies => :requires_login
+  objectify.policy_responders :requires_login => :unauthenticated
+  objectify.legacy_action :controller, :action, :policies => [:x, :y, :z],
+                                                :skip_policies => [:requires_login]
+end
+```
+
+Then, you need to create an ObjectifyController that inherits from ApplicationController, and configure objectify to use that:
+
+```ruby
+# app/controllers/objectify\_controller.rb
+class ObjectifyController < ApplicationController
+  include Objectify::Rails::LegacyControllerBehaviour
+end
+```
+
+```ruby
+# config/application.rb
+module MyApp
+  class Application < Rails::Application
+    # ...snip...
+    objectify.objectify_controller = "objectify"
+  end
+end
+```
+
 ## Copyright
 
 Copyright (c) 2012 James Golick, BitLove Inc. See LICENSE.txt for
