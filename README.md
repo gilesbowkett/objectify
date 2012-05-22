@@ -162,6 +162,24 @@ module MyApp
 end
 ```
 
+## Installation
+
+```ruby
+# Gemfile
+gem "objectify", "> 0"
+
+# config/application.rb
+module MyApp
+  class Application < Rails::Application
+    require "objectify/rails/application"
+    require "objectify/rails/controller"
+    # only have to require this if you want objectify logging
+    require "objectify/rails/log_subscriber" 
+    include Objectify::Rails::Application
+  end
+end
+```
+
 ## Copyright
 
 Copyright (c) 2012 James Golick, BitLove Inc. See LICENSE.txt for
