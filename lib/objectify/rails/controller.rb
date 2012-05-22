@@ -49,7 +49,11 @@ module Objectify
         end
 
         def action
-          @action ||= objectify.action(objectify_route)
+          @action ||= if params[:objectify]
+                        objectify.action(objectify_route)
+                      else
+                        objectify.legacy_action(objectify_route)
+                      end
         end
 
         def execute_policy_chain
