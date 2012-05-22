@@ -10,6 +10,16 @@ Objectify has two primary components:
 
   The flow of an objectify request is as follows:
 
+    0. Objectify actions are configured in the routes file:
+
+      ```ruby
+        # config/routes.rb
+        # ... snip ...
+        objectify.resources :pictures
+      ```
+
+      Objectify currently only supports resourceful actions, but that's just a temporary thing.
+
     1. The policy chain is resolved (based on the various levels of configuration) and executed. Objectify calls the #allowed?(...) method on each policy in the chain. If one of the policies fails, the chain short-circuits at that point, and objectify executes the configured responder for that policy.
 
       An example Policy:
