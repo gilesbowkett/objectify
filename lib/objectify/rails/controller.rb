@@ -8,7 +8,7 @@ module Objectify
   module Rails
     module ControllerHelpers
       def self.included(klass)
-        klass.helper_method(:objectify_executor)
+        klass.helper_method(:objectify_executor) if klass.respond_to?(:helper_method)
       end
 
       private
@@ -35,7 +35,7 @@ module Objectify
         end
         
         def objectify_executor
-          objectify.objectify_executor
+          objectify.executor
         end
 
         def policy_chain_executor
@@ -82,6 +82,10 @@ module Objectify
       include ControllerHelpers
       include Instrumentation
 
+      def self.included(klass)
+        klass.helper_method(:objectify_executor) if klass.respond_to?(:helper_method)
+      end
+
       def method_missing(name, *args, &block)
         instrument("start_processing.objectify", :route => objectify_route)
 
@@ -92,6 +96,10 @@ module Objectify
     module ControllerBehaviour
       include ControllerHelpers
       include Instrumentation
+
+      def self.included(klass)
+        klass.helper_method(:objectify_executor) if klass.respond_to?(:helper_method)
+      end
 
       def method_missing(name, *args, &block)
         instrument("start_processing.objectify", :route => objectify_route)
