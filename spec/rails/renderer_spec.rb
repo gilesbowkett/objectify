@@ -3,7 +3,7 @@ require "objectify/rails/renderer"
 
 describe "Objectify::Rails::Renderer" do
   before do
-    @controller = stub("Controller", :render => nil)
+    @controller = stub("Controller", :render => nil, :redirect_to => nil)
     @renderer = Objectify::Rails::Renderer.new(@controller)
   end
 
@@ -46,5 +46,10 @@ describe "Objectify::Rails::Renderer" do
     end
 
     @responder.should have_received(:html)
+  end
+
+  it "delegates the redirect_to method" do
+    @renderer.redirect_to :somewhere
+    @controller.should have_received(:redirect_to).with(:somewhere)
   end
 end
