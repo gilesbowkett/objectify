@@ -7,6 +7,10 @@ require "objectify/rails/renderer"
 module Objectify
   module Rails
     module ControllerHelpers
+      def self.included(klass)
+        klass.helper_method(:objectify_executor)
+      end
+
       private
         def objectify
           ::Rails.application.objectify
@@ -30,12 +34,12 @@ module Objectify
           end
         end
         
-        def executor
-          objectify.executor
+        def objectify_executor
+          objectify.objectify_executor
         end
 
         def policy_chain_executor
-          @policy_chain_executor ||= Objectify::PolicyChainExecutor.new(executor, objectify)
+          @policy_chain_executor ||= Objectify::PolicyChainExecutor.new(objectify_executor, objectify)
         end
 
         def objectify_route
@@ -67,10 +71,10 @@ module Objectify
         end
 
         def execute_objectify_action
-          service_result = executor.call(action.service, :service)
+          service_result = objectify_executor.call(action.service, :service)
           request_resolver.add(:service_result, service_result)
 
-          executor.call(action.responder, :responder)
+          objectify_executor.call(action.responder, :responder)
         end
     end
 
