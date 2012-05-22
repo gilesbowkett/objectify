@@ -31,8 +31,8 @@ The flow of an objectify request is as follows:
     class UnauthenticatedResponder
       # yes, at some point we probably need a better interface
       # for handling responses, but this'll do for now.
-      def call(controller)
-        controller.redirect_to controller.login_url
+      def call(controller, renderer)
+        renderer.redirect_to controller.login_url
       end
     end
   ```
@@ -65,11 +65,14 @@ The flow of an objectify request is as follows:
   ```ruby
     class PicturesCreateResponder
       # service_result is exactly what it sounds like
-      def call(service_result, controller)
+      def call(service_result, controller, renderer)
         if service_result.persisted?
-          controller.redirect_to service_result
+          renderer.redirect_to service_result
         else
-          controller.render :template => "pictures/edit.html.erb"
+          # this is the only way that you can pass data to the view layer
+          # and you can only pass one thing. Hint: use a presenter.
+          renderer.data(service_result)
+          renderer.render :template => "pictures/edit.html.erb"
         end
       end
     end
