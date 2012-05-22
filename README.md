@@ -165,6 +165,14 @@ module MyApp
 end
 ```
 
+## Views
+
+Objectify has two major impacts on your views.
+
+  1. You can only pass one variable from an objectified action to the controller. You do that by calling renderer.data(the_object_you_want_to_pass). Then, you call objectify_data in the view to fetch the data. If it's not there, it'll raise an error. Use a presenter or some kind of other struct object to pass multiple objects to your views.
+
+  2. You can reuse your policies in your views. require "objectify/rails/helpers" and add Objectify::Rails::Helpers to your helpers list, and you'll get a helper called #policy_allowed?(policy_name). Yay code reuse.
+
 ## Installation
 
 ```ruby
