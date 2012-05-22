@@ -111,7 +111,7 @@ end
 Then, you need to create an ObjectifyController that inherits from ApplicationController, and configure objectify to use that:
 
 ```ruby
-# app/controllers/objectify\_controller.rb
+# app/controllers/objectify_controller.rb
 class ObjectifyController < ApplicationController
   include Objectify::Rails::LegacyControllerBehaviour
 end
