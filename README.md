@@ -203,6 +203,15 @@ module MyApp
 end
 ```
 
+## Issues
+
+We're using this thing in production to serve millions of requests every day. However, it's far from being complete. Here are some of the problems that still need solving:
+
+  * Support for all the kinds of routing that rails does.
+  * Caching of policy results per-request, so we don't have to run them twice if they're used in views.
+  * Smarter injection strategies, and possibly caching.
+  * ???
+
 ## Credits
 
   * Author: James Golick @jamesgolick
