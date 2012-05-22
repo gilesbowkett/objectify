@@ -3,7 +3,9 @@ require "objectify/rails/renderer"
 
 describe "Objectify::Rails::Renderer" do
   before do
-    @controller = stub("Controller", :render => nil, :redirect_to => nil)
+    @controller = stub("Controller", :render => nil,
+                                     :redirect_to => nil,
+                                     :instance_variable_set => nil) # yeah, well.
     @renderer = Objectify::Rails::Renderer.new(@controller)
   end
 
@@ -51,5 +53,11 @@ describe "Objectify::Rails::Renderer" do
   it "delegates the redirect_to method" do
     @renderer.redirect_to :somewhere
     @controller.should have_received(:redirect_to).with(:somewhere)
+  end
+
+  it "can set the data on the controller" do
+    @renderer.data("asdf")
+    @controller.should have_received(:instance_variable_set).
+                        with(:@objectify_data, "asdf")
   end
 end

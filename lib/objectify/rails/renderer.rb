@@ -38,6 +38,10 @@ module Objectify
       def redirect_to(*args)
         @controller.redirect_to(*args)
       end
+
+      def data(data)
+        @controller.instance_variable_set(:@objectify_data, data)
+      end
     end
   end
 end
