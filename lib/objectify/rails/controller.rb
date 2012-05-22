@@ -2,6 +2,7 @@ require "objectify/resolver_locator"
 require "objectify/executor"
 require "objectify/policy_chain_executor"
 require "objectify/instrumentation"
+require "objectify/rails/renderer"
 
 module Objectify
   module Rails
@@ -25,6 +26,7 @@ module Objectify
             resolver.add(:request, request)
             resolver.add(:response, response)
             resolver.add(:flash, flash)
+            resolver.add(:renderer, Renderer.new(self))
           end
         end
         
