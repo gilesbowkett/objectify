@@ -6,7 +6,7 @@ Objectify is a framework that codifies good object oriented design practices for
 
 Objectify has two primary components:
 
-  1. A request execution framework that separates the responsibilities that are typically jammed together in rails controller actions in to 3 types of components: Policies, Services, and Responders. Properly separating and assigning these responsibilities makes for far more testable code, and facilitates better reuse of components.
+  1. A request execution framework that separates the responsibilities that are typically jammed together in rails controller actions in to 3 types of components: Policies, Services, and Responders. Properly separating and assigning these responsibilities makes code far more testable, and facilitates better reuse of components.
 
   The flow of an objectify request is as follows:
 
@@ -20,7 +20,7 @@ Objectify has two primary components:
 
       Objectify currently only supports resourceful actions, but that's just a temporary thing.
 
-    1. The policy chain is resolved (based on the various levels of configuration) and executed. Objectify calls the #allowed?(...) method on each policy in the chain. If one of the policies fails, the chain short-circuits at that point, and objectify executes the configured responder for that policy.
+    1. The policy chain is resolved (based on the various levels of configuration) and executed. Objectify calls the `#allowed?(...)` method on each policy in the chain. If one of the policies fails, the chain short-circuits at that point, and objectify executes the configured responder for that policy.
 
       An example Policy:
 
@@ -68,7 +68,7 @@ Objectify has two primary components:
         end
       ```
 
-    3. Finally, the responder is executed. Following with our Pictures#create example:
+    3. Finally, the responder is executed. Following with our `Pictures#create` example:
 
       ```ruby
         class PicturesCreateResponder
@@ -86,12 +86,12 @@ Objectify has two primary components:
         end
       ```
 
-  2. A dependency injection framework. Objectify automatically injects dependencies in to objects it manages based on parameter names. So, if you have a service method signature like: PictureCreationService#call(params), objectify will automatically inject the request's params when it calls that method. It's very simple to create custom injections by implementing Resolver classes. More on that below.
+  2. A dependency injection framework. Objectify automatically injects dependencies into objects it manages based on parameter names. So, if you have a service method signature like  `PictureCreationService#call(params)`, objectify will automatically inject the request's params when it calls that method. It's very simple to create custom injections by implementing Resolver classes. More on that below.
 
 
 ## What if I have a bunch of existing rails code?
 
-Objectify has a legacy mode that allows you to execute the policy chain as a before_filter in your ApplicationController. You can also configure policies (and skip_policies) for your "legacy" actions. That way, access control code is shared between the legacy and objectified components of your application.
+Objectify has a legacy mode that allows you to execute the policy chain as a `before_filter` in your ApplicationController. You can also configure policies (and `skip_policies`) for your "legacy" actions. That way, access control code is shared between the legacy and objectified components of your application.
 
 I completely rewrote our legacy authentication system as a set of objectify policies, resolvers, and services - I'm gonna package that up and release it soon.
 
@@ -140,7 +140,7 @@ end
 
 ## Custom Injections
 
-Several of the above methods have parameters named 'current_user'. By default, objectify won't know how to inject a parameter by that name, so it'll raise an error when it encounters one. Here's how to create a custom resolver for it that'll automatically get found by name.
+Several of the above methods have parameters named `current_user`. By default, objectify won't know how to inject a parameter by that name, so it'll raise an error when it encounters one. Here's how to create a custom resolver for it that'll automatically get found by name.
 
 ```ruby
 # app/resolvers/current_user_resolver.rb
@@ -181,9 +181,9 @@ end
 
 Objectify has two major impacts on your views.
 
-  1. You can only pass one variable from an objectified action to the controller. You do that by calling renderer.data(the_object_you_want_to_pass). Then, you call objectify_data in the view to fetch the data. If it's not there, it'll raise an error. Use a presenter or some kind of other struct object to pass multiple objects to your views.
+  1. You can only pass one variable from an objectified action to the controller. You do that by calling `renderer.data(the_object_you_want_to_pass)`. Then, you call `objectify_data` in the view to fetch the data. If it's not there, it'll raise an error. Use a presenter or some kind of other struct object to pass multiple objects to your views.
 
-  2. You can reuse your policies in your views. require "objectify/rails/helpers" and add Objectify::Rails::Helpers to your helpers list, and you'll get a helper called #policy_allowed?(policy_name). Yay code reuse.
+  2. You can reuse your policies in your views. `require "objectify/rails/helpers"` and add `Objectify::Rails::Helpers` to your helpers list, and you'll get a helper called `#policy_allowed?(policy_name)`. Yay code reuse.
 
 ## Installation
 
