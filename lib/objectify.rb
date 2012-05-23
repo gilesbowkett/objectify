@@ -1,4 +1,4 @@
-require "objectify/railtie"
+require "objectify/rails/railtie"
 
 module Objectify
 end
