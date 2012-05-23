@@ -7,9 +7,9 @@ Gem::Specification.new do |s|
   s.version     = Objectify::VERSION
   s.authors     = ["James Golick"]
   s.email       = ["jamesgolick@gmail.com"]
-  s.homepage    = ""
-  s.summary     = %q{}
-  s.description = %q{}
+  s.homepage    = "https://github.com/bitlove/objectify"
+  s.summary     = %q{Objects on rails.}
+  s.description = %q{Objects on rails.}
 
   s.rubyforge_project = "objectify"
 
