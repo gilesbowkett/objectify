@@ -93,7 +93,7 @@ Objectify has two primary components:
 
 Objectify has a legacy mode that allows you to execute the policy chain as a before_filter in your ApplicationController. You can also configure policies (and skip_policies) for your "legacy" actions. That way, access control code is shared between the legacy and objectified components of your application.
 
-I completely rewrote our legacy authentication system as a set of objectify policies, resolvers, and services - you can see an example of that at https://github.com/bitlove/objectify_auth.
+I completely rewrote our legacy authentication system as a set of objectify policies, resolvers, and services - I'm gonna package that up and release it soon.
 
 Here's how to run the policy chain in your ApplicationController - it'll figure out which policies to run itself:
 
